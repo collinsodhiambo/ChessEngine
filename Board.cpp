@@ -32,9 +32,24 @@ Board::Board() {
 
 	// Initialize all empty squares in the middle
 	// Should be all the columns of the rows starting from the third row (black region) to the 7 rows
-	for (int row = 2; row < 6; row ++)
+	for (int row = 2; row < 6; row++)
 		{
 		for (int col = 0; col < 8; col++){
 		m_board[row][col] = EMPTY; }
 		}
 }
+
+// print function
+void Board::print(){
+	std::cout << "\n a b c d e f g h\n";
+	std::count << "-------------------\n";
+
+	for (int row = 0; row < 8; ++row){
+		std::count<< 8 - row << "|"; // print row number
+		for (int col = 0; col < 8; ++col) {
+			std::count <<getPieceChar(m_board[row][col]) << "|";
+			}
+		std::cout << " " << 8 - row << "\n"; //print row number again
+        std::count << "-------------------\n";
+        std::cout << " a b c d e f g h\n\n";
+
