@@ -28,7 +28,7 @@ int main() {
 	std::cout << "\nGetting White's initial moves..." << std::endl;
 	std::vector<Move> legalMoves = myBoard.getLegalMoves();
 	printMoves(legalMoves);
-	std::cout << "Total moves found: " << legalMoves.size() << std::endl; // Should be 16
+	std::cout << "Total moves found: " << legalMoves.size() << std::endl; // Should be 16 + 4 for knight
 
 	// Make a move (e2 to e4)
 	std::cout << "\n --- Making a move e2 to e4 ---\n" <<std::endl;
@@ -40,8 +40,7 @@ int main() {
 	// TEST BLACK PAWN
 	std::cout << "\nGetting Black's moves...:" << std::endl;
 	legalMoves = myBoard.getLegalMoves();
-	printMoves(legalMoves);
-	std::cout << "Total moves found: " << legalMoves.size() << std::endl; // 16
+	std::cout << "Total moves found: " << legalMoves.size() << std::endl; // 16 + 4
 	myBoard.print(); // Print the board to see the move
 
 	return 0;
