@@ -36,7 +36,7 @@ class Board {
 
 		// A function to get all legal moves for a pawn at a specific square
 		// Will return a vector of Move objects
-		std::vector<Move> getPawnMoves(int row, int_col);
+		std::vector<Move> getPawnMoves(int row, int col);
 
 		// Helper function to get the character for a piece
 		char getPieceChar(int piece);
