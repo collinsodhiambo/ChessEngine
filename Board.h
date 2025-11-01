@@ -26,9 +26,6 @@ class Board {
 		// Print the board to the console
 		void print();
 
-		// 8x8 array representing the board
-		int m_board[8][8];
-
 		// Function to update the board state with a move.
 		// We pass the Move object by const reference (&). This avoids making a copy
 		// and is more efficient
@@ -38,7 +35,16 @@ class Board {
 		// Will return a vector of Move objects
 		std::vector<Move> getPawnMoves(int row, int col);
 
+		// Master function to get all moves for the current player
+		std::vector<Move> getLegalMoves();
+	private:
 		// Helper function to get the character for a piece
 		char getPieceChar(int piece);
+
+                // 8x8 array representing the board
+                int m_board[8][8];
+
+		// A variable to track whose turn it is
+		bool m_whiteToMove;
 	};
 #endif //BOARD_H
