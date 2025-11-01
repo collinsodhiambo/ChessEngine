@@ -52,6 +52,10 @@ class Board {
 
 		// Master function to get all moves for the current player
 		std::vector<Move> getLegalMoves();
+
+		// Checks if a square is attacked by a given side
+		bool isSquareAttacked(int row, int col, bool byWhite);
+
 	private:
 		// Helper function to get the character for a piece
 		char getPieceChar(int piece);
