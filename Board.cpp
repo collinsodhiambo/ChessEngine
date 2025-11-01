@@ -318,14 +318,17 @@ std::vector<Move> Board::getLegalMoves() {
 						{
 							std::vector<Move> knightMoves = getKnightMoves(row, col);
 							allMoves.insert(allMoves.end(), knightMoves.begin(), knightMoves.end());
-							break;
 						}
+						break;
                                         case W_BISHOP:
                                                         // TODO: allMoves.insert(allMoves.end(), getBishopMoves(row, col));
                                                         break;
                                         case W_ROOK:
-                                                        // TODO: allMoves.insert(allMoves.end(), getRookMoves(row, col));
-                                                        break;
+						{
+							std::vector<Move> rookMoves = getRookMoves(row, col);
+                                                        allMoves.insert(allMoves.end(), rookMoves.begin(), rookMoves.end());
+						}
+                                                break;
                                         case W_QUEEN:
                                                         // TODO: allMoves.insert(allMoves.end(), getQueenMoves(row, col));
                                                         break;
