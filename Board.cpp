@@ -53,3 +53,25 @@ void Board::print(){
         std::count << "-------------------\n";
         std::cout << " a b c d e f g h\n\n";
 
+}
+
+// Helper function to map piece integers to display characters
+char Board::getPieceChar(int piece) {
+	switch (piece) {
+		case EMPTY: return ' ';
+		case W_PAWN: return 'P';
+                case W_KNIGHT: return 'N';
+                case W_BISHOP: return 'B';
+                case W_ROOK: return 'R';
+                case W_QUEEN: return 'Q';
+		case W_KING: return 'K';
+		case B_PAQWN: return 'p';
+                case B_KNIGHT: return 'n';
+                case B_BISHOP: return 'b';
+                case B_ROOK: return 'r';
+                case B_QUEEN: return 'q';
+		case B_KING: return 'k';
+		default: return '?'; // Should not happen
+		}
+}
+
