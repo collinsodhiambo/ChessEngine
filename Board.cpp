@@ -289,6 +289,77 @@ std::vector<Move> Board::getRookMoves(int row, int col) {
 	return moves;
 }
 
+std::vector<Move> Board::getBishopMoves(int row, int col) {
+	std::vector<Move> moves;
+	bool isWhite = (m_board[row][col] > 0);
+
+	// Check UP-RIGHT (row--, col++)
+	for (int r = row - 1, c = col + 1; r >= 0 && c < 8; --r, ++c) {
+		int landing_piece = m_board[r][c];
+
+		if (landing_piece == EMPTY) {
+			moves.push_back({row, col, r, c});
+		}
+		else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
+			moves.push_back({row, col, r, c});
+			break;
+		}
+		else {
+			break;
+		}
+	}
+
+	// Check Up left (row--, col--)
+        for (int r = row - 1, c = col - 1; r >= 0 && c >= 0; --r, --c) {
+                int landing_piece = m_board[r][c];
+
+                if (landing_piece == EMPTY) {
+                        moves.push_back({row, col, r, c});
+                }
+                else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
+                        moves.push_back({row, col, r, c});
+                        break;
+                }
+                else {
+                        break;
+                }
+	}
+
+	// Check DOWN-RIGHT (row++, col++)
+        for (int r = row + 1, c = col + 1; r < 8 && c < 8; ++r, ++c) {
+                int landing_piece = m_board[r][c];
+
+                if (landing_piece == EMPTY) {
+                        moves.push_back({row, col, r, c});
+                }
+                else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
+                        moves.push_back({row, col, r, c});
+                        break;
+                }
+                else {
+                        break;
+                }
+
+	}
+	// Check DOWN-LEFT (row++, col--)
+        for (int r = row + 1, c = col - 1; r < 8 && c >= 0; ++r, --c) {
+                int landing_piece = m_board[r][c];
+
+                if (landing_piece == EMPTY) {
+                        moves.push_back({row, col, r, c});
+                }
+                else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
+                        moves.push_back({row, col, r, c});
+                        break;
+                }
+                else {
+                        break;
+                }
+	}
+
+	return moves;
+}
+
 
 std::vector<Move> Board::getLegalMoves() {
 	std::vector<Move> allMoves; // This will hold all the moves we find
