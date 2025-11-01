@@ -172,3 +172,50 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 	// Return the list of moves we found
 	return moves;
 }
+
+std::vector<Move> Board::getLegalMoves() {
+	std::vector<Move> allMoves; // This will hold all the moves we find
+
+	// Loop over every square on the board
+	for (int row = 0; row < 8; ++row) {
+		for (int col = 0; col < 8; ++col) {
+			int piece = m_board[row][col];
+			if (piece == EMPTY) {
+				continue; // skip empty squares
+			}
+			// check if the piece belongs to the current player
+			// White's turn AND piece is white or vice versa
+			if ((m_whiteToMove && piece > 0) || (!m_whiteToMove && piece < 0)) {
+				// Use switch to decide which "specialist" function to call
+				// We use std::abs(piece) to treat W_PAWN and B_PAWN the same
+				switch (std::abs(piece)) {
+					case W_PAWN:
+						{	// Need brackets for variable declaration in a switch
+							std::vector<Move> pawnMoves = getPawnMoves(row, col);
+							// Add all found moves to our master list
+							allMoves.insert(allMoves.end(), pawnMoves.begin(), pawnMoves.end());
+						}
+						break;
+
+					case W_KNIGHT:
+							// TODO: allMoves.insert(allMoves.end(), getKnightMoves(row, col));
+							break;
+                                        case W_BISHOP:
+                                                        // TODO: allMoves.insert(allMoves.end(), getBishopMoves(row, col));
+                                                        break;
+                                        case W_ROOK:
+                                                        // TODO: allMoves.insert(allMoves.end(), getRookMoves(row, col));
+                                                        break;
+                                        case W_QUEEN:
+                                                        // TODO: allMoves.insert(allMoves.end(), getQueenMoves(row, col));
+                                                        break;
+                                        case W_KING:
+                                                        // TODO: allMoves.insert(allMoves.end(), getKingMoves(row, col));
+                                                        break;
+
+					}
+				}
+			}
+		}
+	return allMoves;
+}
