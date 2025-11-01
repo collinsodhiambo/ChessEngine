@@ -1,9 +1,12 @@
 #include "Board.h"
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 // Create the constructor for the Board
 Board::Board() {
+	m_whiteToMove = true; // White always makes the first move
+
 	// Set the starting board position
 	m_board[0][0] = B_ROOK;
 	m_board[0][1] = B_KNIGHT;
@@ -86,6 +89,9 @@ void Board::makeMove(const Move& move) {
 
 	// Clear where the piece move came from
 	m_board[move.from_row][move.from_col] = EMPTY;
+
+	// Flip the turn of the player
+	m_whiteToMove = !m_whiteToMove;
 }
 
 std::vector<Move> Board::getPawnMoves(int row, int col) {
