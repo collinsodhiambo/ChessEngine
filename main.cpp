@@ -25,29 +25,23 @@ int main() {
 
 
 	// TEST WHITE PAWN
-	std::cout << "\nTesting moves for white Pawn at e2 (6, 4):" << std::endl;
-	std::vector<Move> e2_pawn_moves = myBoard.getPawnMoves(6, 4);
-	printMoves(e2_pawn_moves);
+	std::cout << "\nGetting White's initial moves..." << std::endl;
+	std::vector<Move> legalMoves = myBoard.getLegalMoves();
+	printMoves(legalMoves);
+	std::cout << "Total moves found: " << legalMoves.size() << std::endl; // Should be 16
+
+	// Make a move (e2 to e4)
+	std::cout << "\n --- Making a move e2 to e4 ---\n" <<std::endl;
+	Move e4_move = {6, 4, 4, 4};
+	myBoard.makeMove(e4_move);
+	myBoard.print();
+
 
 	// TEST BLACK PAWN
-	std::cout << "\nTesting moves for black pawns at b7 (1,1):" << std::endl;
-	std::vector<Move> b7_pawn_moves = myBoard.getPawnMoves(1,1);
-	printMoves(b7_pawn_moves);
-
-	// TEST EMPTY SQUARE
-	std::cout << "\nTesting moves for Empty square at e3 (5, 4):" << std::endl;
-	std::vector<Move> e3_moves = myBoard.getPawnMoves(5, 4);
-	printMoves(e3_moves);
-
-	// Make the e2 to e4 pawn move.
-	// e2 is (row 6, col 4) --> White piece
-	// e4 is row 4, col 4 --> Row 0 is the eighth rank, row 7 first and so on
-	//Move whitePawnMove = {6, 4, 4, 4}; // {from_row, from_col, to_row, to_col}
-
-	// Make the move
-	//myBoard.makeMove(whitePawnMove);
-
-	std::cout << "Board after 1. e4:" << std::endl;
+	std::cout << "\nGetting Black's moves...:" << std::endl;
+	legalMoves = myBoard.getLegalMoves();
+	printMoves(legalMoves);
+	std::cout << "Total moves found: " << legalMoves.size() << std::endl; // 16
 	myBoard.print(); // Print the board to see the move
 
 	return 0;
