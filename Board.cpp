@@ -361,6 +361,15 @@ std::vector<Move> Board::getBishopMoves(int row, int col) {
 }
 
 
+std::vector<Move> Board::getQueenMoves(int row, int col) {
+	std::vector<Move> moves = getRookMoves(row, col);;
+	std::vector<Move> bishopMoves = getBishopMoves(row, col);;
+
+	moves.insert(moves.end(), bishopMoves.begin(), bishopMoves.end());
+
+	return moves;
+}
+
 std::vector<Move> Board::getLegalMoves() {
 	std::vector<Move> allMoves; // This will hold all the moves we find
 
