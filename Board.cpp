@@ -173,6 +173,47 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 	return moves;
 }
 
+std::vector<Move> Board::getKnightMoves(int row, int col) {
+	std::vector<Move> moves;
+
+	// Get the color of the knight
+	// We can check if the piece > 0 (White) or < 0 (Black)
+	bool isWhite = (m_board[row][col] > 0);
+
+	// This array holds all 8 possible "L" shape moves
+	// (change in row, change in col)
+	int d_row[] = {-2, -2, -1, -1, 1, 1, 2, 2};
+	int d_col[] = {-1, 1, -1, 2, -2, 2, -1, 1};
+
+	for (int i = 0; i < 8; ++i) {
+		int new_row = row + d_row[i];
+		int new_col = col + d_col[i];
+
+		// Check if the new position is on the board
+		if (new_row >= 0 && new_row < 8 && new_col >= 0 && new_col < 8) {
+			// check the piece at the landing square
+			int landing_piece = m_board[new_row][new_col];
+
+			// Is the square empty?
+			if (landing_piece == EMPTY) {
+				moves.push_back({row, col, new_row, new_col});
+			}
+
+			// No? Is it an enemy piece?
+			else if (landing_piece > 0 && !isWhite) {
+				moves.push_back({row, col, new_row, new_col});
+			}
+
+			else if (landing_piece < 0 && isWhite) {
+				moves.push_back({row, col, new_row, new_col});
+			}
+			// If it's a friendly piece, do nothing
+		}
+	}
+	return moves;
+}
+
+
 std::vector<Move> Board::getLegalMoves() {
 	std::vector<Move> allMoves; // This will hold all the moves we find
 
@@ -198,8 +239,11 @@ std::vector<Move> Board::getLegalMoves() {
 						break;
 
 					case W_KNIGHT:
-							// TODO: allMoves.insert(allMoves.end(), getKnightMoves(row, col));
+						{
+							std::vector<Move> knightMoves = getKnightMoves(row, col);
+							allMoves.insert(allMoves.end(), knightMoves.begin(), knightMoves.end());
 							break;
+						}
                                         case W_BISHOP:
                                                         // TODO: allMoves.insert(allMoves.end(), getBishopMoves(row, col));
                                                         break;
