@@ -35,6 +35,9 @@ class Board {
 		// Will return a vector of Move objects
 		std::vector<Move> getPawnMoves(int row, int col);
 
+		// Knight's move generator
+		std::vector<Move> getKnightMoves(int row, int col);
+
 		// Master function to get all moves for the current player
 		std::vector<Move> getLegalMoves();
 	private:
