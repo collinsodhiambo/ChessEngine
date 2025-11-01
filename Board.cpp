@@ -76,3 +76,13 @@ char Board::getPieceChar(int piece) {
 		}
 }
 
+void Board::makeMove(const Move& move) {
+	// First get the piece from the 'from' square
+	int pieceToMove = m_board[move.from_row][move.from_col];
+
+	// Move it by placing it on the 'to' square
+	m_board[move.to_row][move.to_col] = piceToMove
+
+	// Clear where the piece move came from
+	m_board[move.from_row][move.from_col] = EMPTY;
+}
