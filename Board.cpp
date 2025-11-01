@@ -413,8 +413,11 @@ std::vector<Move> Board::getLegalMoves() {
 						}
                                                 break;
                                         case W_QUEEN:
-                                                        // TODO: allMoves.insert(allMoves.end(), getQueenMoves(row, col));
-                                                        break;
+						{
+							std::vector<Move> queenMoves = getQueenMoves(row, col);
+                                                    allMoves.insert(allMoves.end(), queenMoves.begin(), queenMoves.end());
+                                                }
+						 break;
                                         case W_KING:
                                                         // TODO: allMoves.insert(allMoves.end(), getKingMoves(row, col));
                                                         break;
