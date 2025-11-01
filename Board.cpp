@@ -370,6 +370,32 @@ std::vector<Move> Board::getQueenMoves(int row, int col) {
 	return moves;
 }
 
+std::vector<Move> Board::getKingMoves(int row, int col) {
+	std::vector<Move> moves;
+	bool isWhite = (m_board[row][col]);
+
+	int d_row[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+	int d_col[] = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+	for (int i = 0; i < 8; ++i) {
+		int new_row = row + d_row[i];
+		int new_col = col + d_col[i];
+
+		// Check if the new position is on the board
+		if (new_row >= 0 && new_row < 8 && new_col >= 0 && new_col < 8) {
+			int landing_piece = m_board[new_row][new_col];
+
+			if (landing_piece == EMPTY) {
+				moves.push_back({row, col, new_row, new_col});
+			}
+			else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
+				moves.push_back({row, col, new_row, new_col});
+			}
+		}
+	}
+	return moves;
+}
+
 std::vector<Move> Board::getLegalMoves() {
 	std::vector<Move> allMoves; // This will hold all the moves we find
 
