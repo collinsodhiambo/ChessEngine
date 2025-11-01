@@ -1,5 +1,6 @@
 #include "Board.h"
 #include <iostream>
+#include <vector>
 
 // Create the constructor for the Board
 Board::Board() {
@@ -81,8 +82,87 @@ void Board::makeMove(const Move& move) {
 	int pieceToMove = m_board[move.from_row][move.from_col];
 
 	// Move it by placing it on the 'to' square
-	m_board[move.to_row][move.to_col] = piceToMove
+	m_board[move.to_row][move.to_col] = pieceToMove;
 
 	// Clear where the piece move came from
 	m_board[move.from_row][move.from_col] = EMPTY;
+}
+
+std::vector<Move> Board::getPawnMoves(int row, int col) {
+	// Create an empty list (vector) to store the moves we find
+	std::vector<Move> moves;
+
+	// Get the piece at a given square
+	int piece = m_board[row][col];
+
+	// Logic for white pawns
+	if (piece == W_PAWN) {
+		// Check one step forward. For white pawns, forward means row index DECREASES
+		int one_step_row = row - 1
+		if (one_step_row >= 0 && m_board[one_step_row][col] == EMPTY) {
+			// Square is empty and on the board, so its a legal move
+			moves.push_back({row, col, one_step_row, col});
+		}
+		// Check two steps forward (only from the starting rank)
+		int two_steps_row = row - 2;
+		// Check: (is on starting rank) AND  (one step was clear) AND (two steps is clear)
+		if (row == 6 && m_board[one_step_row][col] == EMPTY && m_board[two_steps_row][col] == EMPTY) {
+			moves.push_back({row, col, two_steps_row, col});
+		}
+
+		// Check captures (left diagonal)
+		int capture_left_col = col - 1;
+		if (one_step_row >= 0 && capture_left_col >= 0) { // check bounds
+			// Check if there is a BLACK piece (piece < 0)
+			if (m_board[one_step_row][capture_left_col] < 0) {
+				moves.push_back({row, col, one_step_row, capture_left_col});
+			}
+		}
+
+		// Check captures (right diagonal)
+		int capture_right_col = col + 1;
+		if (one_step_row >= 0 && capture_right_col < 8) { // Check bounds
+			// Check if there is a black piece (piece < 0)
+			if (m_board[one_step_row][capture_left_col] < 0) {
+				moves.push_back({row, col, one_step_row, capture_left_col});
+			}
+		}
+
+		// TODO: En Passant
+	}
+
+	// BLACK PAWNS
+	else if (piece == B_PAWN) {
+		// check one step forwad. For black, we increment
+		int one_step_row = row + 1;
+		if (one_step_row < 8 && m_board[one_step_row][col] == EMPTY) {
+			moves.push_back({row, col, one_step_row, col});
+		}
+
+		// Check two steps forward (only from starting rank)
+		int two_steps_row = row + 2;
+		if (row == 1 && m_board[one_step_row][col] == EMPTY && m_board[two_steps_row][col] == EMPTY) {
+			moves.push_back({row, col, two_steps_row, col});
+		}
+
+		// Check captures (left diagonal)
+		int capture_left_col = col - 1;
+		if (one_step_row < 8 && capture_left_col >= 0) { // Check bounds
+			// check if there is a WHITE piece (piece > 0)
+			if (m_board[one_step_row][capture_left_col] > 0) {
+				moves.push_back({row, col, one_step_row, capture_left_col});
+			}
+		}
+
+		// Check captures (left right diagonal)
+		int capture_right_col = col + 1;
+		if (one_step_row < 8 && capture_left_col < 8) {
+			// Check if there is a white piece (piece > 0)
+			if (m_board[one_step_row][capture_right_col] > 0) {
+				moves.push_back({row, col, one_step_row, capture_right_col});
+			}
+		}
+	}
+	// Return the list of moves we found
+	return moves;
 }
