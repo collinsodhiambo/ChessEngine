@@ -47,6 +47,9 @@ class Board {
 		// Queen's move generator
 		std::vector<Move> getQueenMoves(int row, int col);
 
+		// King's move generator
+		std::vector<Move> getKingMoves(int row, int col);
+
 		// Master function to get all moves for the current player
 		std::vector<Move> getLegalMoves();
 	private:
