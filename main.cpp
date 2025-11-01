@@ -1,6 +1,7 @@
 #include "Board.h"
 #include <iostream>
 #include <vector>
+#include <iomanip>
 
 // Helper function to print moves
 void printMoves(const std::vector<Move>& moves) {
@@ -23,6 +24,28 @@ int main() {
 	std::cout << "Initial Board:" << std::endl;
 	myBoard.print();
 
+
+	// We'll use std::boolalpha to print "true/false"
+	std::cout << std::boolalpha;
+
+	// Test some squares
+	std::cout << "--- Testing Attack Sensor --- " << std::endl;
+
+	// e3 (row 5, col 4): Should be attacked by White d2-pawn and f2-pawn
+	std::cout << "Is e3 (5, 4) attacked by White? "
+		  << myBoard.isSquareAttacked(5, 4, true) << std::endl; // Should be true
+
+	// e3 (row 5, col 4): Should NOT be attacked by Black
+	std::cout << "Is e3 (5, 4) attacked by Black? "
+		  << myBoard.isSquareAttacked(5, 4, false) << std::endl; // Should be false
+
+	// d3 (row 5, col 3): Attacked by White (c2-pawn, e2-pawn, d1-queen)
+	std::cout << " Is d3 (5, 3) attacked by White? "
+		  << myBoard.isSquareAttacked(5, 3, true) << std::endl; // Should be true
+
+	// f6 (row 2, col 5): Attacked by Black (e7-pawn, g7-pawn, g8-knight)
+	std::cout << "Is f6 (2, 5) attacked by Black? "
+		  << myBoard.isSquareAttacked(2, 5, false) << std::endl; // Should be true
 
 	// TEST WHITE PAWN
 	std::cout << "\nGetting White's initial moves..." << std::endl;
