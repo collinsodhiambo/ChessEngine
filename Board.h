@@ -41,6 +41,9 @@ class Board {
 		// Rook's move generator
 		std::vector<Move> getRookMoves(int row, int col);
 
+		// Bishop's move generator
+		std::vector<Move> getBishopMoves(int row, int col);
+
 		// Master function to get all moves for the current player
 		std::vector<Move> getLegalMoves();
 	private:
