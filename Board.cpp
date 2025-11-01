@@ -40,17 +40,18 @@ Board::Board() {
 }
 
 // print function
-void Board::print(){
+void Board::print() {
 	std::cout << "\n a b c d e f g h\n";
-	std::count << "-------------------\n";
+	std::cout << "-------------------\n";
 
 	for (int row = 0; row < 8; ++row){
-		std::count<< 8 - row << "|"; // print row number
+		std::cout<< 8 - row << "|"; // print row number
 		for (int col = 0; col < 8; ++col) {
-			std::count <<getPieceChar(m_board[row][col]) << "|";
+			std::cout <<getPieceChar(m_board[row][col]) << "|";
 			}
 		std::cout << " " << 8 - row << "\n"; //print row number again
-        std::count << "-------------------\n";
+	}
+        std::cout << "-------------------\n";
         std::cout << " a b c d e f g h\n\n";
 
 }
@@ -65,7 +66,7 @@ char Board::getPieceChar(int piece) {
                 case W_ROOK: return 'R';
                 case W_QUEEN: return 'Q';
 		case W_KING: return 'K';
-		case B_PAQWN: return 'p';
+		case B_PAWN: return 'p';
                 case B_KNIGHT: return 'n';
                 case B_BISHOP: return 'b';
                 case B_ROOK: return 'r';
