@@ -27,6 +27,11 @@ class Board {
 		// 8x8 array representing the board
 		int m_board[8][8];
 
+		// Function to update the board state with a move.
+		// We pass the Move object by const reference (&). This avoids making a copy
+		// and is more efficient
+		void makeMove(const Move& move)
+
 		// Helper function to get the character for a piece
 		char getPieceChar(int piece);
 	};
