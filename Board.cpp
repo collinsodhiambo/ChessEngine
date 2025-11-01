@@ -17,7 +17,7 @@ Board::Board() {
 	for (int i = 0; i < 8; i++)
 		{
 		m_board[1][i] = B_PAWN; // Black Pawns
-		m_board[6][i] = W_PAWN; // White Pawsn
+		m_board[6][i] = W_PAWN; // White Pawns
 		}
 
 	// White pieces
