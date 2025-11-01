@@ -457,3 +457,93 @@ std::vector<Move> Board::getLegalMoves() {
 		}
 	return allMoves;
 }
+
+bool Board::isSquareAttacked(int row, int col, bool byWhite) {
+	// Check for Pawn attacks
+	// We check the squares where an attacking pawn would have to be
+	if (byWhite) {
+		// Look for a white Pawn at (row + 1, col - 1) or (row + 1, col+1)
+		if ((col - 1 >= 0 && m_board[row + 1][col - 1] == W_PAWN) || (col + 1 < 8 && m_board[row + 1][col + 1] == W_PAWN)) {
+			return true;
+		}
+	}
+	else { // Check for Black Pawn
+		if ((col - 1 >= 0 &&m_board[row - 1][col - 1] == B_PAWN) || (col + 1 < 8 && m_board[row-1][col + 1] == B_PAWN)) {
+			return true;
+		}
+	}
+
+	// Check for Knigh Attacks
+	int d_row[] = {-2, -2, -1, -1, 1, 1, 2, 2};
+	int d_col[] = {-1, 1, -2, 2, -2, 2, -1, 1};
+	int knight_to_find = byWhite ? W_KNIGHT: B_KNIGHT;
+
+	for (int i = 0; i < 8; ++i) {
+		int r = row + d_row[i];
+		int c = col + d_col[i];
+		if (r >= 0 && r < 8 && c >= 0 && c < 8 && m_board[r][c] == knight_to_find) {
+			return true;
+		}
+	}
+
+	// Check for Sliding attacks (Rook, Bishop, Queen)
+	// Check all 8 directions (4 straight, 4 diagonal)
+
+	// Pieces to find
+	int rook_to_find = byWhite ? W_ROOK : B_ROOK;
+	int bishop_to_find = byWhite ? W_BISHOP : B_BISHOP;
+	int queen_to_find = byWhite ? W_QUEEN : B_QUEEN;
+
+	// Straight directions (for Rooks and Queens)
+	int straight_dr[] = {-1, 1, 0 , 0};
+	int straight_dc[] = {0, 0, -1, 1};
+	for (int i = 0; i < 4; ++i) {
+		for (int step = 1; ; ++step) {
+			int r = row + straight_dr[i] * step;
+			int c = col + straight_dc[i] * step;
+			if (r < 0 || r >= 8 || c < 0 || c >= 8) break; //off board
+
+			int piece = m_board[r][c];
+			if (piece != EMPTY) {
+				if (piece == rook_to_find || piece == queen_to_find) return true;
+				break; // Blocked by another piece
+			}
+		}
+	}
+
+	// Diagonal directions
+	int diag_dr[] = {-1, -1, 1, 1};
+	int diag_dc[] = {-1, 1, -1, 1};
+	for (int i = 0; i < 4; ++i) {
+		for (int step = 1; ; ++step) {
+			int r = row + diag_dr[i] * step;
+			int c = row + diag_dc[i] * step;
+			if (r < 0 || r >= 8 || c < 0 || c >= 8) break; // Off board
+
+			int piece = m_board[r][c];
+			if (piece != EMPTY) {
+				if (piece == bishop_to_find || piece == queen_to_find) return true;
+				break; // Blocked by another piece
+			}
+		}
+	}
+
+	// Check for King attacks
+	int king_to_find = byWhite ? W_KING : B_KING;
+	for (int dr = -1; dr <= 1; ++dr) {
+		for (int dc = -1; dc <= 1; ++dc) {
+			if (dr == 0 && dc == 0) continue;
+			int r = row + dr;
+			int c = col + dc;
+			if (r >= 0 && r < 8 && c >= 0 && c < 8 && m_board[r][c] == king_to_find) {
+				return true;
+			}
+		}
+	}
+
+	// If we've checked everything and found nothing
+	return false;
+}
+
+
+
