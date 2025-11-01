@@ -1,5 +1,19 @@
 #include "Board.h"
 #include <iostream>
+#include <vector>
+
+// Helper function to print moves
+void printMoves(const std::vector<Move>& moves) {
+	if (moves.empty()) {
+		std::count << " (No Moves found)" << std::endl;
+		return;
+	}
+
+	for (const Move& move : moves) {
+		std::count << " Move from (" <<move.from_row << "," << move.from_col << ")" << " to (" << move.to_row << ","
+		<< move.to_col << ")" << std::endl;
+	}
+}
 
 int main() {
 	std::cout << "Welcome to your C++ Chess Engine!" << std::endl;
