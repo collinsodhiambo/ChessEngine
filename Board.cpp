@@ -98,7 +98,7 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 	// Logic for white pawns
 	if (piece == W_PAWN) {
 		// Check one step forward. For white pawns, forward means row index DECREASES
-		int one_step_row = row - 1
+		int one_step_row = row - 1;
 		if (one_step_row >= 0 && m_board[one_step_row][col] == EMPTY) {
 			// Square is empty and on the board, so its a legal move
 			moves.push_back({row, col, one_step_row, col});
