@@ -1,6 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <vector> // To hold a list of moves
+
 // Use simple integer to represent pieces (for now)
 // Positive = White, Negative = Black
 // 0 = Empty, 1 = Pawn, 2 = Knight, 3 = Bishop, 4 = Rook, 5 = Queen, 6 = King
@@ -30,7 +32,11 @@ class Board {
 		// Function to update the board state with a move.
 		// We pass the Move object by const reference (&). This avoids making a copy
 		// and is more efficient
-		void makeMove(const Move& move)
+		void makeMove(const Move& move);
+
+		// A function to get all legal moves for a pawn at a specific square
+		// Will return a vector of Move objects
+		std::vector<Move> getPawnMoves(int row, int_col);
 
 		// Helper function to get the character for a piece
 		char getPieceChar(int piece);
