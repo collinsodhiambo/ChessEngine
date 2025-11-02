@@ -91,6 +91,10 @@ void Board::makeMove(const Move& move) {
 	// Clear where the piece move came from
 	m_board[move.from_row][move.from_col] = EMPTY;
 
+	// Handle promotion
+	if (move.promotion_piece != EMPTY) {
+		m_board[move.to_row][move.to_col] = move.promotion_piece;
+	}
 	// Flip the turn of the player
 	m_whiteToMove = !m_whiteToMove;
 }
