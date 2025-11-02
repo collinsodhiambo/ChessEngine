@@ -400,7 +400,8 @@ std::vector<Move> Board::getKingMoves(int row, int col) {
 }
 
 std::vector<Move> Board::getLegalMoves() {
-	std::vector<Move> allMoves; // This will hold all the moves we find
+	std::vector<Move> legalMoves; // This will hold all the legal moves we find after check-testing
+	std::vector<Move> pseudoLegalMoves; // All moves before check-testing
 
 	// Loop over every square on the board
 	for (int row = 0; row < 8; ++row) {
@@ -419,38 +420,38 @@ std::vector<Move> Board::getLegalMoves() {
 						{	// Need brackets for variable declaration in a switch
 							std::vector<Move> pawnMoves = getPawnMoves(row, col);
 							// Add all found moves to our master list
-							allMoves.insert(allMoves.end(), pawnMoves.begin(), pawnMoves.end());
+							pseudoLegalMoves.insert(pseudoLegalMoves.end(), pawnMoves.begin(), pawnMoves.end());
 						}
 						break;
 
 					case W_KNIGHT:
 						{
 							std::vector<Move> knightMoves = getKnightMoves(row, col);
-							allMoves.insert(allMoves.end(), knightMoves.begin(), knightMoves.end());
+							pseudoLegalMoves.insert(pseudoLegalMoves.end(), knightMoves.begin(), knightMoves.end());
 						}
 						break;
                                         case W_BISHOP:
 						{
                                                  	std::vector<Move> bishopMoves = getBishopMoves(row, col);
-						        allMoves.insert(allMoves.end(), bishopMoves.begin(), bishopMoves.end());
+						        pseudoLegalMoves.insert(pseudoLegalMoves.end(), bishopMoves.begin(), bishopMoves.end());
                                                 }
 					       break;
                                         case W_ROOK:
 						{
 							std::vector<Move> rookMoves = getRookMoves(row, col);
-                                                        allMoves.insert(allMoves.end(), rookMoves.begin(), rookMoves.end());
+                                                        pseudoLegalMoves.insert(pseudoLegalMoves.end(), rookMoves.begin(), rookMoves.end());
 						}
                                                 break;
                                         case W_QUEEN:
 						{
 							std::vector<Move> queenMoves = getQueenMoves(row, col);
-                                                    allMoves.insert(allMoves.end(), queenMoves.begin(), queenMoves.end());
+                                                        pseudoLegalMoves.insert(pseudoLegalMoves.end(), queenMoves.begin(), queenMoves.end());
                                                 }
 						 break;
                                         case W_KING:
 						{
 							std::vector<Move> kingMoves = getKingMoves(row, col);
-                                                        allMoves.insert(allMoves.end(), kingMoves.begin(), kingMoves.end());
+                                                        pseudoLegalMoves.insert(pseudoLegalMoves.end(), kingMoves.begin(), kingMoves.end());
 						}
 						break;
 
