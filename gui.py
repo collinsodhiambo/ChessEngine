@@ -96,33 +96,41 @@ def draw_board(screen):
 
 
 def main():
-	""" Main game loop.
-	"""
+    """ Main game loop.
+    """
 
-	# Initialization
-	pygame.init()
-	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-	pygame.display.set_caption("My C++ Chess Engine")
+    # Initialization
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("My C++ Chess Engine")
 
-	# Create our C++ Board
-	board = chess_engine_module.Board()
+    # Load assets
+    images = load_images()
 
-	# Main game loop
-	running = True
-	while running:
-		# Event Handling
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				running = False
+    # Create our C++ Board
+    board = Board()
 
-		draw_board(screen)
+    # Main game loop
+    running = True
+    while running:
+        # Event Handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-		# Update the Display
-		pygame.display.flip()
+		# Get state from C++
+        # We get 8x8 list from C++ every frame
+        current_board_state = board.get_board_state()
 
-	# Quit
-	pygame.quit()
-	sys.exit()
+        # Drawing
+        draw_game_state(screen, current_board_state, images)
+
+        # Update the Display
+        pygame.display.flip()
+
+    # Quit
+    pygame.quit()
+    sys.exit()
 
 if __name__ == "__main__":
-	main()
+    main()
