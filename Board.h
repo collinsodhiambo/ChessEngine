@@ -17,6 +17,15 @@ struct Move {
 	int from_col;
 	int to_row;
 	int to_col;
+	int promotion_piece;
+
+	// Constructor for Normal moves
+	Move(int fr, int fc, int tr, int tc):
+		from_row(fr), from_col(fc), to_row(tr), to_col(tc), promotion_piece(EMPTY) {}
+
+	Move(int fr, int fc, int tr, int tc, int pp):
+                from_row(fr), from_col(fc), to_row(tr), to_col(tc), promotion_piece(pp) {}
+
 };
 
 class Board {
