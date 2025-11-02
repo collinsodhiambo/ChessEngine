@@ -71,6 +71,10 @@ class Board {
 		// We pass 'true' to check the white king, 'false' for black
 		bool isKingInCheck(bool whiteKing);
 
+
+        // A function to get the board state as a 2D vector
+        std::vector<std::vector<int>> getBoardState();
+
 	private:
 		// Helper function to get the character for a piece
 		char getPieceChar(int piece);
