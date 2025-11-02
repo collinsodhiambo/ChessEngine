@@ -8,6 +8,10 @@
 Board::Board() {
 	m_whiteToMove = true; // White always makes the first move
 	m_enPassantTarget = {-1, -1};
+	m_canWhiteKingSide = true;
+	m_canWhiteQueenSide = true;
+	m_canBlackKingSide = true;
+	m_canBlackQueenSide = true;
 
 	// Set the starting board position
 	m_board[0][0] = B_ROOK;
@@ -86,6 +90,27 @@ void Board::makeMove(const Move& move) {
 	// First get the piece from the 'from' square
 	int pieceToMove = m_board[move.from_row][move.from_col];
 
+	// If the King moves, all its castling rights are gone
+	if (pieceToMove == W_KING) {
+		m_canWhiteKingSide = false;
+		m_canWhiteQueenSide = false;
+	}
+	else if (pieceToMove == B_KING) {
+		m_canBlackKingSide = false;
+		m_canBlackQueenSide = false;
+	}
+
+	// If a rook moves, its specifi castling right is gone
+	if (move.from_row == 7) {
+		if (move.from_col == 0) m_canWhiteQueenSide = false; // a1 rook
+		if (move.from_col == 7) m_canWhiteKingSide = false; // h1 rook
+	}
+	// Check for Black rooks
+	if (move.from_row == 0) {
+		if (move.from_col == 0) m_canBlackKingSide = false; // a8 rook
+		if (move.from_col == 7) m_canBlackKingSide = false; // h8 rook
+	}
+
 	// Check for an En Passant capture
 	// An en passant capture is when a pawn moves diagonally to an EMPTY square
 	// but only if that capture is the m_enPassantTarget
@@ -105,6 +130,21 @@ void Board::makeMove(const Move& move) {
 	// Clear where the piece move came from
 	m_board[move.from_row][move.from_col] = EMPTY;
 
+	// Handle the rook's move if it was a castle
+	// Check if the move was a king moving 2 squares
+	if (std::abs(pieceToMove) == W_KING && std::abs(move.from_col - move.to_col) == 2) {
+		// A castle. Move the rook
+		if (move.to_col == 6) { // King side
+			// Move the rook from h1 to f1
+			m_board[move.from_row][5] = m_board[move.from_row][7];
+			m_board[move.from_row][7] = EMPTY;
+		}
+		else if (move.to_col == 2) { // Queenside
+			// Move the rook from a1 to d1
+			m_board[move.from_row][3] = m_board[move.from_row][0];
+			m_board[move.from_row][0] = EMPTY;
+		}
+	}
 	// Handle promotion
 	if (move.promotion_piece != EMPTY) {
 		m_board[move.to_row][move.to_col] = move.promotion_piece;
@@ -479,6 +519,34 @@ std::vector<Move> Board::getQueenMoves(int row, int col) {
 std::vector<Move> Board::getKingMoves(int row, int col) {
 	std::vector<Move> moves;
 	bool isWhite = (m_board[row][col] > 0);
+
+	// Generate Castling Moves
+	if (!isKingInCheck(isWhite)) { // Not in check
+		if (isWhite) {
+			// Check White Kingside (0-0)
+			if (m_canWhiteKingSide && m_board[7][5] == EMPTY && m_board[7][6] == EMPTY &&
+				!isSquareAttacked(7, 5, false) && !isSquareAttacked(7, 6, false)) {
+					moves.push_back(Move{7, 4, 7, 6}); // e1 to g1
+			}
+			// Check White Queen side (0-0-0)
+			if (m_canWhiteQueenSide && m_board[7][1] == EMPTY && m_board[7][2] == EMPTY && m_board[7][3] == EMPTY &&
+				!isSquareAttacked(7, 2, false) && !isSquareAttacked(7, 3, false)) {
+					moves.push_back(Move{7, 4, 7, 2}); // e1 to c1
+			}
+		}
+		else {
+                        // Check Black Kingside (0-0)
+                        if (m_canBlackKingSide && m_board[0][5] == EMPTY && m_board[0][6] == EMPTY &&
+                                !isSquareAttacked(0, 5, true) && !isSquareAttacked(0, 6, true)) {
+                                        moves.push_back(Move{0, 4, 0, 6}); // e8 to g8
+                        }
+                        // Check Black Queen side (0-0-0)
+                        if (m_canBlackQueenSide && m_board[0][1] == EMPTY && m_board[0][2] == EMPTY && m_board[0][3] == EMPTY &&
+                                !isSquareAttacked(0, 2, true) && !isSquareAttacked(0, 3, true)) {
+                                        moves.push_back(Move{0, 4, 0, 2}); // e8 to c8
+                        }
+                }
+	}
 
 	int d_row[] = {-1, -1, -1, 0, 0, 1, 1, 1};
 	int d_col[] = {-1, 0, 1, -1, 1, -1, 0, 1};
