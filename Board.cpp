@@ -375,7 +375,7 @@ std::vector<Move> Board::getQueenMoves(int row, int col) {
 
 std::vector<Move> Board::getKingMoves(int row, int col) {
 	std::vector<Move> moves;
-	bool isWhite = (m_board[row][col]);
+	bool isWhite = (m_board[row][col] > 0);
 
 	int d_row[] = {-1, -1, -1, 0, 0, 1, 1, 1};
 	int d_col[] = {-1, 0, 1, -1, 1, -1, 0, 1};
