@@ -537,7 +537,7 @@ bool Board::isSquareAttacked(int row, int col, bool byWhite) {
 	for (int i = 0; i < 4; ++i) {
 		for (int step = 1; ; ++step) {
 			int r = row + diag_dr[i] * step;
-			int c = row + diag_dc[i] * step;
+			int c = col + diag_dc[i] * step;
 			if (r < 0 || r >= 8 || c < 0 || c >= 8) break; // Off board
 
 			int piece = m_board[r][c];
@@ -565,5 +565,25 @@ bool Board::isSquareAttacked(int row, int col, bool byWhite) {
 	return false;
 }
 
+std::pair<int, int> Board::findKing(bool whiteKing) {
+	int king_to_find = whiteKing ? W_KING : B_KING;
 
+	for (int row = 0; row < 8; ++row) {
+		for (int col = 0; col < 8; ++col) {
+			if (m_board[row][col] == king_to_find) {
+				return {row, col};
+			}
+		}
+	}
+	// This should never happen in a real game, but it's good to have
+	return {-1, -1};
+}
 
+bool Board::isKingInCheck(bool whiteKing) {
+	// Find the king
+	std::pair<int, int> king_pos = findKing(whiteKing);
+
+	// Check if that square is attacked by the OPPONENT
+	// if we're checking the white King, we check for attacks by Black (!whiteKing)
+	return isSquareAttacked(king_pos.first, king_pos.second, !whiteKing);
+}
