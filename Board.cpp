@@ -186,7 +186,7 @@ std::vector<Move> Board::getKnightMoves(int row, int col) {
 	// This array holds all 8 possible "L" shape moves
 	// (change in row, change in col)
 	int d_row[] = {-2, -2, -1, -1, 1, 1, 2, 2};
-	int d_col[] = {-1, 1, -1, 2, -2, 2, -1, 1};
+	int d_col[] = {-1, 1, -2, 2, -2, 2, -1, 1};
 
 	for (int i = 0; i < 8; ++i) {
 		int new_row = row + d_row[i];
