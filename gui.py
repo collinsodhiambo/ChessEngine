@@ -13,6 +13,7 @@ COLOR_LIGHT = (238, 238, 210) # A light, creamy color
 COLOR_DARK = (118, 150, 86)  # A nice green
 HIGHLIGHT_COLOR = (246, 246, 130) # Yellow for selected piece
 HIGHLIGHT_LEGAL_COLOR = (186, 202, 68) # Greenish-yellow for legal moves
+CHECK_COLOR = (255, 100, 100) # Red color for check
 
 # C++ Enum values
 W_PAWN, W_KNIGHT, W_BISHOP, W_ROOK, W_QUEEN, W_KING = list(range(1,7))
@@ -63,7 +64,7 @@ def get_row_col_from_mouse(pos):
     col = x // SQUARE_SIZE
     return row, col
 
-def draw_game_state(screen, board_state, images, selected_square, legal_moves_for_piece):
+def draw_game_state(screen, board_state, images, selected_square, legal_moves_for_piece, is_in_check, is_white_turn):
     """
     Draws the entire game state, including the board and the pieces.
     """
@@ -71,11 +72,23 @@ def draw_game_state(screen, board_state, images, selected_square, legal_moves_fo
     # Draw the 8x8 board state
     draw_board(screen)
 
+    # Highlight for check
+    if is_in_check:
+        king_to_find = W_KING if is_white_turn else B_KING
+        for row in range(8):
+            for col in range(8):
+                if board_state[row][col] == king_to_find:
+                    pygame.draw.rect(screen, CHECK_COLOR,
+                        pygame.Rect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                    break # Found the king
+
     # Highlight the selected square (if any)
     if selected_square:
         row, col = selected_square
         pygame.draw.rect(screen, HIGHLIGHT_COLOR,
-                pygame.Rect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+            pygame.Rect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 5) # Use a border
+
+
 
     # Highlight legal moves (if any)
     for move in legal_moves_for_piece:
@@ -146,6 +159,9 @@ def main():
         current_board_state = board.get_board_state()
         is_white_turn = board.is_white_to_move()
 
+        # Ask the C++ engine if the current player is in check
+        is_in_check = board.isKingInCheck(is_white_turn)
+
         # Event Handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -199,7 +215,9 @@ def main():
 
 
         # Drawing
-        draw_game_state(screen, current_board_state, images, selected_square, legal_moves_for_piece)
+        draw_game_state(screen, current_board_state, images,
+                selected_square, legal_moves_for_piece,
+                is_in_check, is_white_turn)
 
         # Update the Display
         pygame.display.flip()
