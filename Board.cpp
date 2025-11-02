@@ -110,16 +110,26 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 	if (piece == W_PAWN) {
 		// Check one step forward. For white pawns, forward means row index DECREASES
 		int one_step_row = row - 1;
+		bool is_promotion = (one_step_row == 0);
+
 		if (one_step_row >= 0 && m_board[one_step_row][col] == EMPTY) {
 			// Square is empty and on the board, so its a legal move
-			moves.push_back({row, col, one_step_row, col});
+			if (is_promotion) {
+			moves.push_back(Move{row, col, one_step_row, col, W_QUEEN});
+                        moves.push_back(Move{row, col, one_step_row, col, W_ROOK});
+                        moves.push_back(Move{row, col, one_step_row, col, W_BISHOP});
+                        moves.push_back(Move{row, col, one_step_row, col, W_KNIGHT}); }
+			else {
+                        moves.push_back(Move{row, col, one_step_row, col});
+			}
+
 		}
 		// Check two steps forward (only from the starting rank)
 		int two_steps_row = row - 2;
 		if (two_steps_row >= 0) {
 		// Check: (is on starting rank) AND  (one step was clear) AND (two steps is clear)
 		if (row == 6 && m_board[one_step_row][col] == EMPTY && m_board[two_steps_row][col] == EMPTY) {
-			moves.push_back({row, col, two_steps_row, col}); }
+			moves.push_back(Move{row, col, two_steps_row, col}); }
 		}
 
 		// Check captures (left diagonal)
@@ -127,7 +137,15 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 		if (one_step_row >= 0 && capture_left_col >= 0) { // check bounds
 			// Check if there is a BLACK piece (piece < 0)
 			if (m_board[one_step_row][capture_left_col] < 0) {
-				moves.push_back({row, col, one_step_row, capture_left_col});
+				if (is_promotion) {
+		                        moves.push_back(Move{row, col, one_step_row, col, W_QUEEN});
+                		        moves.push_back(Move{row, col, one_step_row, col, W_ROOK});
+                        		moves.push_back(Move{row, col, one_step_row, col, W_BISHOP});
+                        		moves.push_back(Move{row, col, one_step_row, col, W_KNIGHT});
+
+				} else {
+				moves.push_back(Move{row, col, one_step_row, capture_left_col});
+				}
 			}
 		}
 
@@ -136,10 +154,18 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 		if (one_step_row >= 0 && capture_right_col < 8) { // Check bounds
 			// Check if there is a black piece (piece < 0)
 			if (m_board[one_step_row][capture_right_col] < 0) {
-				moves.push_back({row, col, one_step_row, capture_right_col});
+                                if (is_promotion) {
+                                        moves.push_back(Move{row, col, one_step_row, col, W_QUEEN});
+                                        moves.push_back(Move{row, col, one_step_row, col, W_ROOK});
+                                        moves.push_back(Move{row, col, one_step_row, col, W_BISHOP});
+                                        moves.push_back(Move{row, col, one_step_row, col, W_KNIGHT});
+
+                                } else {
+
+				moves.push_back(Move{row, col, one_step_row, capture_right_col});
+				}
 			}
 		}
-
 		// TODO: En Passant
 	}
 
@@ -147,15 +173,24 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 	else if (piece == B_PAWN) {
 		// check one step forwad. For black, we increment
 		int one_step_row = row + 1;
+		bool is_promotion = (row == 7);
 		if (one_step_row < 8 && m_board[one_step_row][col] == EMPTY) {
+			if (is_promotion) {
+                        moves.push_back(Move{row, col, one_step_row, col, B_QUEEN});
+                        moves.push_back(Move{row, col, one_step_row, col, B_ROOK});
+                        moves.push_back(Move{row, col, one_step_row, col, B_BISHOP});
+                        moves.push_back(Move{row, col, one_step_row, col, B_KNIGHT});
+			}
+		else {
 			moves.push_back({row, col, one_step_row, col});
+			}
 		}
 
 		// Check two steps forward (only from starting rank)
 		int two_steps_row = row + 2;
 		if (two_steps_row < 8) {
 		if (row == 1 && m_board[one_step_row][col] == EMPTY && m_board[two_steps_row][col] == EMPTY) {
-			moves.push_back({row, col, two_steps_row, col}); }
+			moves.push_back(Move{row, col, two_steps_row, col}); }
 		}
 
 		// Check captures (left diagonal)
@@ -163,7 +198,15 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 		if (one_step_row < 8 && capture_left_col >= 0) { // Check bounds
 			// check if there is a WHITE piece (piece > 0)
 			if (m_board[one_step_row][capture_left_col] > 0) {
-				moves.push_back({row, col, one_step_row, capture_left_col});
+                	        if (is_promotion) {
+        	                	moves.push_back(Move{row, col, one_step_row, col, B_QUEEN});
+	                	        moves.push_back(Move{row, col, one_step_row, col, B_ROOK});
+	        	                moves.push_back(Move{row, col, one_step_row, col, B_BISHOP});
+        	                	moves.push_back(Move{row, col, one_step_row, col, B_KNIGHT});
+                        		}
+                		else {
+					moves.push_back(Move{row, col, one_step_row, capture_left_col});
+				}
 			}
 		}
 
@@ -172,7 +215,15 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 		if (one_step_row < 8 && capture_right_col < 8) {
 			// Check if there is a white piece (piece > 0)
 			if (m_board[one_step_row][capture_right_col] > 0) {
-				moves.push_back({row, col, one_step_row, capture_right_col});
+                                if (is_promotion) {
+                                        moves.push_back(Move{row, col, one_step_row, col, B_QUEEN});
+                                        moves.push_back(Move{row, col, one_step_row, col, B_ROOK});
+                                        moves.push_back(Move{row, col, one_step_row, col, B_BISHOP});
+                                        moves.push_back(Move{row, col, one_step_row, col, B_KNIGHT});
+                                        }
+                                else {
+					moves.push_back(Move{row, col, one_step_row, capture_right_col});
+				}
 			}
 		}
 	}
@@ -203,16 +254,16 @@ std::vector<Move> Board::getKnightMoves(int row, int col) {
 
 			// Is the square empty?
 			if (landing_piece == EMPTY) {
-				moves.push_back({row, col, new_row, new_col});
+				moves.push_back(Move{row, col, new_row, new_col});
 			}
 
 			// No? Is it an enemy piece?
 			else if (landing_piece > 0 && !isWhite) {
-				moves.push_back({row, col, new_row, new_col});
+				moves.push_back(Move{row, col, new_row, new_col});
 			}
 
 			else if (landing_piece < 0 && isWhite) {
-				moves.push_back({row, col, new_row, new_col});
+				moves.push_back(Move{row, col, new_row, new_col});
 			}
 			// If it's a friendly piece, do nothing
 		}
@@ -230,11 +281,11 @@ std::vector<Move> Board::getRookMoves(int row, int col) {
 		int landing_piece = m_board[new_row][col];
 
 		if (landing_piece == EMPTY) {
-			moves.push_back({row, col, new_row, col});
+			moves.push_back(Move{row, col, new_row, col});
 		}
 		else if ((landing_piece < 0 && isWhite) || (!isWhite && landing_piece > 0)) {
 			// enemy piece
-			moves.push_back({row, col, new_row, col}); // Add capture then stop
+			moves.push_back(Move{row, col, new_row, col}); // Add capture then stop
 			break;
 		}
 		else {
@@ -248,11 +299,11 @@ std::vector<Move> Board::getRookMoves(int row, int col) {
 		int landing_piece = m_board[new_row][col];
 
                 if (landing_piece == EMPTY) {
-                        moves.push_back({row, col, new_row, col});
+                        moves.push_back(Move{row, col, new_row, col});
                 }
                 else if ((landing_piece < 0 && isWhite) || (!isWhite && landing_piece > 0)) {
                         // enemy piece
-                        moves.push_back({row, col, new_row, col}); // Add capture then stop
+                        moves.push_back(Move{row, col, new_row, col}); // Add capture then stop
                         break;
                 }
                 else {
@@ -267,10 +318,10 @@ std::vector<Move> Board::getRookMoves(int row, int col) {
 		int landing_piece = m_board[row][new_col];
 
 		if (landing_piece == EMPTY) {
-			moves.push_back({row, col, row, new_col});
+			moves.push_back(Move{row, col, row, new_col});
 		}
 		else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
-			moves.push_back({row, col, row, new_col});
+			moves.push_back(Move{row, col, row, new_col});
 			break;
 		}
 		else {
@@ -283,10 +334,10 @@ std::vector<Move> Board::getRookMoves(int row, int col) {
                 int landing_piece = m_board[row][new_col];
 
                 if (landing_piece == EMPTY) {
-                        moves.push_back({row, col, row, new_col});
+                        moves.push_back(Move{row, col, row, new_col});
                 }
                 else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
-                        moves.push_back({row, col, row, new_col});
+                        moves.push_back(Move{row, col, row, new_col});
                         break;
                 }
                 else {
@@ -305,10 +356,10 @@ std::vector<Move> Board::getBishopMoves(int row, int col) {
 		int landing_piece = m_board[r][c];
 
 		if (landing_piece == EMPTY) {
-			moves.push_back({row, col, r, c});
+			moves.push_back(Move{row, col, r, c});
 		}
 		else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
-			moves.push_back({row, col, r, c});
+			moves.push_back(Move{row, col, r, c});
 			break;
 		}
 		else {
@@ -321,10 +372,10 @@ std::vector<Move> Board::getBishopMoves(int row, int col) {
                 int landing_piece = m_board[r][c];
 
                 if (landing_piece == EMPTY) {
-                        moves.push_back({row, col, r, c});
+                        moves.push_back(Move{row, col, r, c});
                 }
                 else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
-                        moves.push_back({row, col, r, c});
+                        moves.push_back(Move{row, col, r, c});
                         break;
                 }
                 else {
@@ -340,7 +391,7 @@ std::vector<Move> Board::getBishopMoves(int row, int col) {
                         moves.push_back({row, col, r, c});
                 }
                 else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
-                        moves.push_back({row, col, r, c});
+                        moves.push_back(Move{row, col, r, c});
                         break;
                 }
                 else {
@@ -353,10 +404,10 @@ std::vector<Move> Board::getBishopMoves(int row, int col) {
                 int landing_piece = m_board[r][c];
 
                 if (landing_piece == EMPTY) {
-                        moves.push_back({row, col, r, c});
+                        moves.push_back(Move{row, col, r, c});
                 }
                 else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
-                        moves.push_back({row, col, r, c});
+                        moves.push_back(Move{row, col, r, c});
                         break;
                 }
                 else {
@@ -393,10 +444,10 @@ std::vector<Move> Board::getKingMoves(int row, int col) {
 			int landing_piece = m_board[new_row][new_col];
 
 			if (landing_piece == EMPTY) {
-				moves.push_back({row, col, new_row, new_col});
+				moves.push_back(Move{row, col, new_row, new_col});
 			}
 			else if ((isWhite && landing_piece < 0) || (!isWhite && landing_piece > 0)) {
-				moves.push_back({row, col, new_row, new_col});
+				moves.push_back(Move{row, col, new_row, new_col});
 			}
 		}
 	}
