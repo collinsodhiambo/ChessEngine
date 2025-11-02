@@ -149,8 +149,9 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 
 		// Check two steps forward (only from starting rank)
 		int two_steps_row = row + 2;
+		if (two_steps_row < 8) {
 		if (row == 1 && m_board[one_step_row][col] == EMPTY && m_board[two_steps_row][col] == EMPTY) {
-			moves.push_back({row, col, two_steps_row, col});
+			moves.push_back({row, col, two_steps_row, col}); }
 		}
 
 		// Check captures (left diagonal)
