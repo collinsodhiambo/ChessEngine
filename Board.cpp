@@ -459,21 +459,37 @@ std::vector<Move> Board::getLegalMoves() {
 				}
 			}
 		}
-	return allMoves;
+
+	// Filter for truly legal moves
+	for (const Move& move : pseudoLegalMoves) {
+		// Create a copy of the Board
+		Board testBoard = *this;
+
+		// Make the move on the copy
+		testBoard.makeMove(move);
+
+		// Check if the King of the player who just moved is in check.
+		if (!testBoard.isKingInCheck(m_whiteToMove)) {
+			legalMoves.push_back(move);
+		}
+	}
+	return legalMoves; // Fully filtered
 }
 
 bool Board::isSquareAttacked(int row, int col, bool byWhite) {
 	// Check for Pawn attacks
 	// We check the squares where an attacking pawn would have to be
 	if (byWhite) {
+		if (row + 1 < 8) {
 		// Look for a white Pawn at (row + 1, col - 1) or (row + 1, col+1)
 		if ((col - 1 >= 0 && m_board[row + 1][col - 1] == W_PAWN) || (col + 1 < 8 && m_board[row + 1][col + 1] == W_PAWN)) {
-			return true;
+			return true; }
 		}
 	}
 	else { // Check for Black Pawn
+		if (row - 1 >= 0) {
 		if ((col - 1 >= 0 &&m_board[row - 1][col - 1] == B_PAWN) || (col + 1 < 8 && m_board[row-1][col + 1] == B_PAWN)) {
-			return true;
+			return true; }
 		}
 	}
 
