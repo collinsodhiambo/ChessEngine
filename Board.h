@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include <vector> // To hold a list of moves
+#include <utility>
 
 // Use simple integer to represent pieces (for now)
 // Positive = White, Negative = Black
@@ -56,6 +57,11 @@ class Board {
 		// Checks if a square is attacked by a given side
 		bool isSquareAttacked(int row, int col, bool byWhite);
 
+
+		// Check the current king's status
+		// We pass 'true' to check the white king, 'false' for black
+		bool isKingInCheck(bool whiteKing);
+
 	private:
 		// Helper function to get the character for a piece
 		char getPieceChar(int piece);
@@ -65,5 +71,8 @@ class Board {
 
 		// A variable to track whose turn it is
 		bool m_whiteToMove;
+
+		// Helper to find the specified king (specified by `bool whiteKing`)
+		std::pair<int, int> findKing(bool whiteKing);
 	};
 #endif //BOARD_H
