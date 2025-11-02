@@ -1,0 +1,12 @@
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/bB.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/bK.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/bN.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/bP.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/bQ.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/bR.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/wB.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/wK.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/wN.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/wP.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/wQ.svg
+https://raw.githubusercontent.com/lichess-org/lila/95040a43332c72d9d82a8afd21e48ce1a7584360/public/piece/cburnett/wR.svg
