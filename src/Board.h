@@ -83,5 +83,8 @@ class Board {
 
 		// Helper to find the specified king (specified by `bool whiteKing`)
 		std::pair<int, int> findKing(bool whiteKing);
+
+		// Store the (row, col) of the square that is vulerable to en passant. (-1, -) if none.
+		std::pair<int, int> m_enPassantTarget;
 	};
 #endif //BOARD_H
