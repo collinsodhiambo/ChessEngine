@@ -165,7 +165,7 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 
 		// Check captures (left right diagonal)
 		int capture_right_col = col + 1;
-		if (one_step_row < 8 && capture_left_col < 8) {
+		if (one_step_row < 8 && capture_right_col < 8) {
 			// Check if there is a white piece (piece > 0)
 			if (m_board[one_step_row][capture_right_col] > 0) {
 				moves.push_back({row, col, one_step_row, capture_right_col});
