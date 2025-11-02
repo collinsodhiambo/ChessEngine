@@ -1,5 +1,5 @@
 import pygame
-from chess import Board
+from chess import Board, Move
 import sys
 import os
 
@@ -11,6 +11,8 @@ SQUARE_SIZE = SCREEN_HEIGHT // 8
 # RGB Colors
 COLOR_LIGHT = (238, 238, 210) # A light, creamy color
 COLOR_DARK = (118, 150, 86)  # A nice green
+HIGHLIGHT_COLOR = (246, 246, 130) # Yellow for selected piece
+HIGHLIGHT_LEGAL_COLOR = (186, 202, 68) # Greenish-yellow for legal moves
 
 # C++ Enum values
 W_PAWN, W_KNIGHT, W_BISHOP, W_ROOK, W_QUEEN, W_KING = list(range(1,7))
@@ -52,14 +54,37 @@ def load_images():
             sys.exit()
     return images
 
+def get_row_col_from_mouse(pos):
+    """
+    Converts a mouse (x, y) position to a (row, col) grid coordinate.
+    """
+    x, y = pos
+    row = y // SQUARE_SIZE
+    col = x // SQUARE_SIZE
+    return row, col
 
-def draw_game_state(screen, board_state, images):
+def draw_game_state(screen, board_state, images, selected_square, legal_moves_for_piece):
     """
     Draws the entire game state, including the board and the pieces.
     """
 
     # Draw the 8x8 board state
     draw_board(screen)
+
+    # Highlight the selected square (if any)
+    if selected_square:
+        row, col = selected_square
+        pygame.draw.rect(screen, HIGHLIGHT_COLOR,
+                pygame.Rect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
+    # Highlight legal moves (if any)
+    for move in legal_moves_for_piece:
+        row, col = move.to_row, move.to_col
+
+        # Draw a translucent circle in the center for the square
+        center_x = col * SQUARE_SIZE + SQUARE_SIZE // 2
+        center_y = row * SQUARE_SIZE + SQUARE_SIZE // 2
+        pygame.draw.circle(screen, HIGHLIGHT_COLOR, (center_x, center_y), SQUARE_SIZE // 6)
 
     # Draw the pieces
     for row in range(8):
@@ -110,20 +135,71 @@ def main():
     # Create our C++ Board
     board = Board()
 
+    # Game state variable
+    selected_square = None
+    legal_moves_for_piece = []
+
     # Main game loop
     running = True
     while running:
+        # Get state from C++
+        current_board_state = board.get_board_state()
+        is_white_turn = board.is_white_to_move()
+
         # Event Handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-		# Get state from C++
-        # We get 8x8 list from C++ every frame
-        current_board_state = board.get_board_state()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                row, col = get_row_col_from_mouse(pos)
+                clicked_piece = current_board_state[row][col]
+
+                # Check if the click is on a friendly piece
+                is_friendly_piece = (is_white_turn and clicked_piece > 0) or \
+                                    (not is_white_turn and clicked_piece < 0)
+
+                if selected_square is None:
+                    # First Click: Select a piece
+                    if is_friendly_piece:
+                        selected_square = (row, col)
+
+                        # Get all legal moves, then filter them
+                        all_legal_moves = board.getLegalMoves()
+                        legal_moves_for_piece = [m for m in all_legal_moves if m.from_row == row and m.from_col == col]
+
+                else:
+                    # Second click: Try to make a move
+                    from_row, from_col = selected_square
+                    to_row, to_col = row, col
+
+                    # Find the move that matches this click
+                    move_to_make = None
+                    for move in legal_moves_for_piece:
+                        if move.to_row == to_row and move.to_col == to_col:
+                            # This is a legal move
+                            # TODO: Handle promotion piece
+                            if move.promotion_piece != EMPTY:
+                                # Auto promote to queen
+                                if is_white_turn:
+                                    move_to_make = Move(from_row, from_col, to_row, to_col, W_QUEEN)
+                                else:
+                                    move_to_make = Move(from_row, from_col, to_row, to_col, B_QUEEN)
+                            else:
+                                    move_to_make = move
+                            break
+
+                    if move_to_make:
+                        board.makeMove(move_to_make)
+
+                    # Reset the click state, whether the move was legal or not
+                    selected_square = None
+                    legal_moves_for_piece = []
+
 
         # Drawing
-        draw_game_state(screen, current_board_state, images)
+        draw_game_state(screen, current_board_state, images, selected_square, legal_moves_for_piece)
 
         # Update the Display
         pygame.display.flip()
