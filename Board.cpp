@@ -240,7 +240,7 @@ std::vector<Move> Board::getRookMoves(int row, int col) {
 	}
 
 	// check moves down: Increasing row
-	for (int new_row = row + 1; row < 8; ++new_row) {
+	for (int new_row = row + 1; new_row < 8; ++new_row) {
 		int landing_piece = m_board[new_row][col];
 
                 if (landing_piece == EMPTY) {
