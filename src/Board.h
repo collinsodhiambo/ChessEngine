@@ -86,5 +86,11 @@ class Board {
 
 		// Store the (row, col) of the square that is vulerable to en passant. (-1, -) if none.
 		std::pair<int, int> m_enPassantTarget;
+
+		// Castling rights
+		bool m_canWhiteKingSide;
+		bool m_canWhiteQueenSide;
+		bool m_canBlackKingSide;
+		bool m_canBlackQueenSide;
 	};
 #endif //BOARD_H
