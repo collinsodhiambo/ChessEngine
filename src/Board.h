@@ -75,6 +75,9 @@ class Board {
         // A function to get the board state as a 2D vector
         std::vector<std::vector<int>> getBoardState();
 
+        // Function to say whose turn it is
+        bool isWhiteToMove();
+
 	private:
 		// Helper function to get the character for a piece
 		char getPieceChar(int piece);
