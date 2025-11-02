@@ -21,50 +21,42 @@ int main() {
 
 	Board myBoard; // Call the constructor and sets up the pieces
 
-	std::cout << "Initial Board:" << std::endl;
+	std::cout << "--- Testing for Fool's Mate ---" << std::endl;
+
+	// f3
+	Move m1 = {6, 5, 5, 5}; // (White)
+	myBoard.makeMove(m1);
+
+	// e5
+	Move m2 = {1, 4, 3, 4}; // (Black)
+	myBoard.makeMove(m2);
+
+	// g4
+	Move m3 = {6, 6, 4, 6}; // White
+	myBoard.makeMove(m3);
+
+	// Qh4# (checkmate)
+	Move m4 = {0, 3, 4, 7}; // Black
+	myBoard.makeMove(m4);
+
+	// The Board is now checkmate
 	myBoard.print();
 
 
-	// We'll use std::boolalpha to print "true/false"
-	std::cout << std::boolalpha;
-
-	// Test some squares
-	std::cout << "--- Testing Attack Sensor --- " << std::endl;
-
-	// e3 (row 5, col 4): Should be attacked by White d2-pawn and f2-pawn
-	std::cout << "Is e3 (5, 4) attacked by White? "
-		  << myBoard.isSquareAttacked(5, 4, true) << std::endl; // Should be true
-
-	// e3 (row 5, col 4): Should NOT be attacked by Black
-	std::cout << "Is e3 (5, 4) attacked by Black? "
-		  << myBoard.isSquareAttacked(5, 4, false) << std::endl; // Should be false
-
-	// d3 (row 5, col 3): Attacked by White (c2-pawn, e2-pawn, d1-queen)
-	std::cout << " Is d3 (5, 3) attacked by White? "
-		  << myBoard.isSquareAttacked(5, 3, true) << std::endl; // Should be true
-
-	// f6 (row 2, col 5): Attacked by Black (e7-pawn, g7-pawn, g8-knight)
-	std::cout << "Is f6 (2, 5) attacked by Black? "
-		  << myBoard.isSquareAttacked(2, 5, false) << std::endl; // Should be true
-
-	// TEST WHITE PAWN
-	std::cout << "\nGetting White's initial moves..." << std::endl;
+	// -- TEST
+	// It's White's turn, and White is in checkmate
+	// getLegalMoves() should return an empty list
+	std::cout << "--- Getting White's legal moves... ---" << std::endl;
 	std::vector<Move> legalMoves = myBoard.getLegalMoves();
 	printMoves(legalMoves);
+
 	std::cout << "Total moves found: " << legalMoves.size() << std::endl; // Should be 16 + 4 for knight
 
-	// Make a move (e2 to e4)
-	std::cout << "\n --- Making a move e2 to e4 ---\n" <<std::endl;
-	Move e4_move = {6, 4, 4, 4};
-	myBoard.makeMove(e4_move);
-	myBoard.print();
-
-
-	// TEST BLACK PAWN
-	std::cout << "\nGetting Black's moves...:" << std::endl;
-	legalMoves = myBoard.getLegalMoves();
-	std::cout << "Total moves found: " << legalMoves.size() << std::endl; // 16 + 4
-	myBoard.print(); // Print the board to see the move
-
+	if (legalMoves.size() == 0) {
+		std::cout << "TEST PASSED: Engine correctly found 0 moves (Checkmate!)" << std::endl;
+	}
+	else {
+		std::cout << "TEST FAILED: Engine found " << legalMoves.size() << " moves." << std::endl;
+	}
 	return 0;
 }
