@@ -131,8 +131,8 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 		int capture_right_col = col + 1;
 		if (one_step_row >= 0 && capture_right_col < 8) { // Check bounds
 			// Check if there is a black piece (piece < 0)
-			if (m_board[one_step_row][capture_left_col] < 0) {
-				moves.push_back({row, col, one_step_row, capture_left_col});
+			if (m_board[one_step_row][capture_right_col] < 0) {
+				moves.push_back({row, col, one_step_row, capture_right_col});
 			}
 		}
 
