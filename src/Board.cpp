@@ -7,6 +7,7 @@
 // Create the constructor for the Board
 Board::Board() {
 	m_whiteToMove = true; // White always makes the first move
+	m_enPassantTarget = {-1, -1};
 
 	// Set the starting board position
 	m_board[0][0] = B_ROOK;
@@ -85,6 +86,19 @@ void Board::makeMove(const Move& move) {
 	// First get the piece from the 'from' square
 	int pieceToMove = m_board[move.from_row][move.from_col];
 
+	// Check for an En Passant capture
+	// An en passant capture is when a pawn moves diagonally to an EMPTY square
+	// but only if that capture is the m_enPassantTarget
+	if (std::abs(pieceToMove) == W_PAWN && move.to_row == m_enPassantTarget.first && move.to_col == m_enPassantTarget.second) {
+		// Remove the enemy pawn
+		if (m_whiteToMove) { // white is capturing
+			// The black pawn is 1 row below the landing square
+			m_board[move.to_row + 1][move.to_col] = EMPTY;
+		}
+		else {
+			m_board[move.to_row -1][move.to_col] = EMPTY;
+		}
+	}
 	// Move it by placing it on the 'to' square
 	m_board[move.to_row][move.to_col] = pieceToMove;
 
@@ -94,6 +108,20 @@ void Board::makeMove(const Move& move) {
 	// Handle promotion
 	if (move.promotion_piece != EMPTY) {
 		m_board[move.to_row][move.to_col] = move.promotion_piece;
+	}
+
+	// Clear Old target and set new one
+	m_enPassantTarget = {-1, -1}; // Clear target from previous turn
+
+	// Check if this move was a 2-square pawn push
+	if (std::abs(pieceToMove) == W_PAWN) {
+		if (std::abs(move.from_row - move.to_row) == 2) {
+		if (m_whiteToMove) { // White just moved
+			m_enPassantTarget = {move.to_row + 1, move.to_col};
+		} else { // Black just moved
+			m_enPassantTarget = {move.to_row - 1, move.to_col};
+			}
+		}
 	}
 	// Flip the turn of the player
 	m_whiteToMove = !m_whiteToMove;
@@ -149,6 +177,12 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 			}
 		}
 
+                // Check for En Passant
+                else if (one_step_row == m_enPassantTarget.first && capture_left_col == m_enPassantTarget.second) {
+                        moves.push_back(Move{row, col, one_step_row, capture_left_col});
+                }
+
+
 		// Check captures (right diagonal)
 		int capture_right_col = col + 1;
 		if (one_step_row >= 0 && capture_right_col < 8) { // Check bounds
@@ -165,8 +199,12 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 				moves.push_back(Move{row, col, one_step_row, capture_right_col});
 				}
 			}
+		// Check for En Passant
+		else if (one_step_row == m_enPassantTarget.first && capture_right_col == m_enPassantTarget.second) {
+			moves.push_back(Move{row, col, one_step_row, capture_right_col});
 		}
-		// TODO: En Passant
+
+		}
 	}
 
 	// BLACK PAWNS
@@ -209,6 +247,11 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 				}
 			}
 		}
+                // Check for En Passant
+                else if (one_step_row == m_enPassantTarget.first && capture_left_col == m_enPassantTarget.second) {
+                        moves.push_back(Move{row, col, one_step_row, capture_left_col});
+                }
+
 
 		// Check captures (left right diagonal)
 		int capture_right_col = col + 1;
@@ -225,7 +268,12 @@ std::vector<Move> Board::getPawnMoves(int row, int col) {
 					moves.push_back(Move{row, col, one_step_row, capture_right_col});
 				}
 			}
-		}
+
+                  }
+                // Check for En Passant
+                else if (one_step_row == m_enPassantTarget.first && capture_right_col == m_enPassantTarget.second) {
+                        moves.push_back(Move{row, col, one_step_row, capture_right_col});
+                }
 	}
 	// Return the list of moves we found
 	return moves;
