@@ -4,7 +4,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(chess_engine_module, m) {
+PYBIND11_MODULE(chess, m) {
 	m.doc() = "A fast C++ chess engine for Python";
 
 	// Bind the Move struct so Python can see it
