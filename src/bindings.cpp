@@ -30,6 +30,6 @@ PYBIND11_MODULE(chess_engine_module, m) {
 		.def("makeMove", &Board::makeMove)
 		.def("getLegalMoves", &Board::getLegalMoves)
 		.def("isKingInCheck", &Board::isKingInCheck)
-		.def("isSquareAttacked", &Board::isSquareAttacked);
-
+		.def("isSquareAttacked", &Board::isSquareAttacked)
+        .def("get_board_state", &Board::getBoardState);
 }
