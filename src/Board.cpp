@@ -758,3 +758,16 @@ bool Board::isKingInCheck(bool whiteKing) {
 	// if we're checking the white King, we check for attacks by Black (!whiteKing)
 	return isSquareAttacked(king_pos.first, king_pos.second, !whiteKing);
 }
+
+
+std::vector<std::vector<int>> Board::getBoardState() {
+    // Create an 8x8 vector
+    std::vector<std::vector<int>> board_state(8, std::vector<int>(8));
+
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            board_state[row][col] = m_board[row][col];
+        }
+    }
+    return board_state;
+}
