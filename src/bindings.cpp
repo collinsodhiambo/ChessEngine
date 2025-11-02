@@ -31,5 +31,6 @@ PYBIND11_MODULE(chess, m) {
 		.def("getLegalMoves", &Board::getLegalMoves)
 		.def("isKingInCheck", &Board::isKingInCheck)
 		.def("isSquareAttacked", &Board::isSquareAttacked)
+        .def("is_white_to_move", &Board::isWhiteToMove)
         .def("get_board_state", &Board::getBoardState);
 }
