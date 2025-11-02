@@ -49,6 +49,11 @@ Board::Board() {
 		}
 }
 
+// Is it white's turn
+bool Board::isWhiteToMove() {
+    return m_whiteToMove;
+}
+
 // print function
 void Board::print() {
 	std::cout << "\n a b c d e f g h\n";
