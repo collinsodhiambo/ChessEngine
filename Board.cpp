@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <utility>
 
 // Create the constructor for the Board
 Board::Board() {
