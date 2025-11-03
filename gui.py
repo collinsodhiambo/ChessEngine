@@ -4,12 +4,12 @@ import sys
 import os
 
 # --- Constants ---
-BOARD_WIDTH = 512  # The 8x8 board
-CAPTURE_WIDTH = 120 # NEW: Width of the "graveyard" area
-SCREEN_WIDTH = BOARD_WIDTH + CAPTURE_WIDTH # NEW: Total window width
+BOARD_WIDTH = 512
+CAPTURE_WIDTH = 120
+SCREEN_WIDTH = BOARD_WIDTH + CAPTURE_WIDTH
 SCREEN_HEIGHT = 512
 SQUARE_SIZE = SCREEN_HEIGHT // 8
-CAPTURE_IMAGE_SIZE = SQUARE_SIZE // 2 # NEW: Smaller images for captured pieces
+CAPTURE_IMAGE_SIZE = SQUARE_SIZE // 2
 
 # RGB Colors
 COLOR_LIGHT = (238, 238, 210)
@@ -74,7 +74,7 @@ def draw_game_state(screen, board_state, images, images_small, selected_square,
     """
     Draws the entire game state, including board, pieces, and highlights.
     """
-    # 1. Draw the 8x8 chessboard and labels
+    # Draw the 8x8 chessboard and labels
     for row in range(8):
         for col in range(8):
             is_light = (row + col) % 2 == 0
@@ -94,7 +94,7 @@ def draw_game_state(screen, board_state, images, images_small, selected_square,
                                                    row * SQUARE_SIZE + SQUARE_SIZE - 5))
                 screen.blit(label, rect)
 
-    # 2. Highlight for Check
+    # Highlight for Check
     if is_in_check:
         king_to_find = W_KING if is_white_turn else B_KING
         for row in range(8):
@@ -105,21 +105,21 @@ def draw_game_state(screen, board_state, images, images_small, selected_square,
                                                  SQUARE_SIZE, SQUARE_SIZE))
                     break
 
-    # 3. Highlight the selected square
+    # Highlight the selected square
     if selected_square:
         row, col = selected_square
         pygame.draw.rect(screen, HIGHLIGHT_COLOR,
                          pygame.Rect(col * SQUARE_SIZE, row * SQUARE_SIZE,
                                      SQUARE_SIZE, SQUARE_SIZE), 5)
 
-    # 4. Highlight legal moves
+    # Highlight legal moves
     for move in legal_moves_for_piece:
         row, col = move.to_row, move.to_col
         center_x = col * SQUARE_SIZE + SQUARE_SIZE // 2
         center_y = row * SQUARE_SIZE + SQUARE_SIZE // 2
         pygame.draw.circle(screen, HIGHLIGHT_LEGAL_COLOR, (center_x, center_y), SQUARE_SIZE // 6)
 
-    # 5. Draw the pieces on the board
+    # Draw the pieces on the board
     for row in range(8):
         for col in range(8):
             piece = board_state[row][col]
@@ -129,7 +129,7 @@ def draw_game_state(screen, board_state, images, images_small, selected_square,
                                                 row * SQUARE_SIZE + SQUARE_SIZE // 2))
                 screen.blit(image, rect)
 
-    # 6. Draw the Captured Pieces Area (NEW)
+    # Draw the Captured Pieces Area (NEW)
     pygame.draw.rect(screen, CAPTURE_BG_COLOR,
                      pygame.Rect(BOARD_WIDTH, 0, CAPTURE_WIDTH, SCREEN_HEIGHT))
 

@@ -120,103 +120,96 @@ char Board::getPieceChar(int piece)
 
 void Board::makeMove(const Move &move)
 {
-	// First get the piece from the 'from' square
-	int pieceToMove = m_board[move.from_row][move.from_col];
+	//  Save the current state to history
+	GameState current_state;
+	saveState(current_state);
+	m_history.push_back(current_state);
 
-	// If the King moves, all its castling rights are gone
+	//  Clear the redo stack
+	m_redoStack.clear();
+
+	int pieceToMove = m_board[move.from_row][move.from_col];
+	int capturedPiece = m_board[move.to_row][move.to_col]; // Piece on target square
+
+	//  Disable Castling Rights
 	if (pieceToMove == W_KING)
 	{
 		m_canWhiteKingSide = false;
 		m_canWhiteQueenSide = false;
 	}
-	else if (pieceToMove == B_KING)
-	{
-		m_canBlackKingSide = false;
-		m_canBlackQueenSide = false;
-	}
-
-	// If a rook moves, its specifi castling right is gone
-	if (move.from_row == 7)
-	{
-		if (move.from_col == 0)
-			m_canWhiteQueenSide = false; // a1 rook
-		if (move.from_col == 7)
-			m_canWhiteKingSide = false; // h1 rook
-	}
-	// Check for Black rooks
 	if (move.from_row == 0)
 	{
 		if (move.from_col == 0)
-			m_canBlackKingSide = false; // a8 rook
+			m_canBlackQueenSide = false; // a8 Rook
 		if (move.from_col == 7)
-			m_canBlackKingSide = false; // h8 rook
+			m_canBlackKingSide = false; // h8 Rook
 	}
 
-	// Check for an En Passant capture
-	// An en passant capture is when a pawn moves diagonally to an EMPTY square
-	// but only if that capture is the m_enPassantTarget
-	if (std::abs(pieceToMove) == W_PAWN && move.to_row == m_enPassantTarget.first && move.to_col == m_enPassantTarget.second)
+	if (capturedPiece != EMPTY)
 	{
-		// Remove the enemy pawn
 		if (m_whiteToMove)
-		{ // white is capturing
-			// The black pawn is 1 row below the landing square
+			m_blackCaptured.push_back(capturedPiece);
+		else
+			m_whiteCaptured.push_back(capturedPiece);
+	}
+
+	//  Check for En Passant capture
+	if (std::abs(pieceToMove) == W_PAWN &&
+		move.to_row == m_enPassantTarget.first &&
+		move.to_col == m_enPassantTarget.second)
+	{
+		if (m_whiteToMove)
+		{
 			m_board[move.to_row + 1][move.to_col] = EMPTY;
+			m_blackCaptured.push_back(B_PAWN); // Add the captured pawn
 		}
 		else
 		{
 			m_board[move.to_row - 1][move.to_col] = EMPTY;
+			m_whiteCaptured.push_back(W_PAWN); // Add the captured pawn
 		}
 	}
-	// Move it by placing it on the 'to' square
-	m_board[move.to_row][move.to_col] = pieceToMove;
 
-	// Clear where the piece move came from
+	// Make the move
+	m_board[move.to_row][move.to_col] = pieceToMove;
 	m_board[move.from_row][move.from_col] = EMPTY;
 
-	// Handle the rook's move if it was a castle
-	// Check if the move was a king moving 2 squares
+	// Handle Rook's move if castle
 	if (std::abs(pieceToMove) == W_KING && std::abs(move.from_col - move.to_col) == 2)
 	{
-		// A castle. Move the rook
 		if (move.to_col == 6)
-		{ // King side
-			// Move the rook from h1 to f1
+		{ // Kingside
 			m_board[move.from_row][5] = m_board[move.from_row][7];
 			m_board[move.from_row][7] = EMPTY;
 		}
 		else if (move.to_col == 2)
 		{ // Queenside
-			// Move the rook from a1 to d1
 			m_board[move.from_row][3] = m_board[move.from_row][0];
 			m_board[move.from_row][0] = EMPTY;
 		}
 	}
+
 	// Handle promotion
 	if (move.promotion_piece != EMPTY)
 	{
 		m_board[move.to_row][move.to_col] = move.promotion_piece;
 	}
 
-	// Clear Old target and set new one
-	m_enPassantTarget = {-1, -1}; // Clear target from previous turn
-
-	// Check if this move was a 2-square pawn push
-	if (std::abs(pieceToMove) == W_PAWN)
+	// Set new En Passant target
+	m_enPassantTarget = {-1, -1};
+	if (std::abs(pieceToMove) == W_PAWN && std::abs(move.from_row - move.to_row) == 2)
 	{
-		if (std::abs(move.from_row - move.to_row) == 2)
-		{
-			if (m_whiteToMove)
-			{ // White just moved
-				m_enPassantTarget = {move.to_row + 1, move.to_col};
-			}
-			else
-			{ // Black just moved
-				m_enPassantTarget = {move.to_row - 1, move.to_col};
-			}
-		}
+		if (m_whiteToMove)
+			m_enPassantTarget = {move.to_row + 1, move.to_col};
+		else
+			m_enPassantTarget = {move.to_row - 1, move.to_col};
 	}
-	// Flip the turn of the player
+
+	// 10. Sort captured lists
+	std::sort(m_whiteCaptured.begin(), m_whiteCaptured.end());
+	std::sort(m_blackCaptured.begin(), m_blackCaptured.end());
+
+	// Flip the turn
 	m_whiteToMove = !m_whiteToMove;
 }
 
@@ -230,7 +223,7 @@ std::vector<Move> Board::getPawnMoves(int row, int col)
 		int one_step_row = row - 1;
 		bool is_promotion = (one_step_row == 0);
 
-		// --- One Step Forward ---
+		// One Step Forward ---
 		if (one_step_row >= 0 && m_board[one_step_row][col] == EMPTY)
 		{
 			if (is_promotion)
@@ -246,7 +239,7 @@ std::vector<Move> Board::getPawnMoves(int row, int col)
 			}
 		}
 
-		// --- Two Steps Forward ---
+		// Two Steps Forward
 		if (row == 6)
 		{
 			int two_steps_row = row - 2;
@@ -256,7 +249,7 @@ std::vector<Move> Board::getPawnMoves(int row, int col)
 			}
 		}
 
-		// --- Captures ---
+		// Captures
 		int d_col[] = {-1, 1}; // {-1: left, 1: right}
 		for (int dc : d_col)
 		{
@@ -268,7 +261,6 @@ std::vector<Move> Board::getPawnMoves(int row, int col)
 				{
 					if (is_promotion)
 					{
-						// THIS IS THE FIX: Use 'capture_col', not 'col'
 						moves.push_back(Move{row, col, one_step_row, capture_col, W_QUEEN});
 						moves.push_back(Move{row, col, one_step_row, capture_col, W_ROOK});
 						moves.push_back(Move{row, col, one_step_row, capture_col, W_BISHOP});
@@ -292,7 +284,7 @@ std::vector<Move> Board::getPawnMoves(int row, int col)
 		int one_step_row = row + 1;
 		bool is_promotion = (one_step_row == 7);
 
-		// --- One Step Forward ---
+		// One Step Forward
 		if (one_step_row < 8 && m_board[one_step_row][col] == EMPTY)
 		{
 			if (is_promotion)
@@ -308,7 +300,7 @@ std::vector<Move> Board::getPawnMoves(int row, int col)
 			}
 		}
 
-		// --- Two Steps Forward ---
+		// Two Steps Forward
 		if (row == 1)
 		{
 			int two_steps_row = row + 2;
@@ -318,7 +310,7 @@ std::vector<Move> Board::getPawnMoves(int row, int col)
 			}
 		}
 
-		// --- Captures ---
+		// Captures
 		int d_col[] = {-1, 1}; // {-1: left, 1: right}
 		for (int dc : d_col)
 		{
@@ -330,7 +322,6 @@ std::vector<Move> Board::getPawnMoves(int row, int col)
 				{
 					if (is_promotion)
 					{
-						// THIS IS THE FIX: Use 'capture_col', not 'col'
 						moves.push_back(Move{row, col, one_step_row, capture_col, B_QUEEN});
 						moves.push_back(Move{row, col, one_step_row, capture_col, B_ROOK});
 						moves.push_back(Move{row, col, one_step_row, capture_col, B_BISHOP});
