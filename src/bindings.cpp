@@ -4,8 +4,18 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(chess, m) {
+PYBIND11_MODULE(chess, m)
+{
 	m.doc() = "A fast C++ chess engine for Python";
+
+	// Bind GameStatus enum so python can see it
+	py::enum_<GameStatus>(m, "GameStatus")
+		.value("IN_PROGRESS", GameStatus::IN_PROGRESS)
+		.value("WHITE_WINS_CHECKMATE", GameStatus::WHITE_WINS_CHECKMATE)
+		.value("BLACK_WINS_CHECKMATE", GameStatus::BLACK_WINS_CHECKMATE)
+		.value("DRAW_STALEMATE", GameStatus::DRAW_STALEMATE)
+		.value("DRAW_INSUFFICIENT_MATERIAL", GameStatus::DRAW_INSUFFICIENT_MATERIAL)
+		.export_values(); // Make the enum values available at module level
 
 	// Bind the Move struct so Python can see it
 	py::class_<Move>(m, "Move")
@@ -31,6 +41,7 @@ PYBIND11_MODULE(chess, m) {
 		.def("getLegalMoves", &Board::getLegalMoves)
 		.def("isKingInCheck", &Board::isKingInCheck)
 		.def("isSquareAttacked", &Board::isSquareAttacked)
-        .def("is_white_to_move", &Board::isWhiteToMove)
-        .def("get_board_state", &Board::getBoardState);
+		.def("is_white_to_move", &Board::isWhiteToMove)
+		.def("get_board_state", &Board::getBoardState)
+		.def("get_game_status", &Board::getGameStatus);
 }
