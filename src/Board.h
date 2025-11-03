@@ -8,11 +8,35 @@
 // Positive = White, Negative = Black
 // 0 = Empty, 1 = Pawn, 2 = Knight, 3 = Bishop, 4 = Rook, 5 = Queen, 6 = King
 
-enum Piece { EMPTY = 0, W_PAWN = 1, W_KNIGHT = 2, W_BISHOP = 3, W_ROOK = 4, W_QUEEN = 5, W_KING = 6,
-	B_PAWN = -1, B_KNIGHT = -2, B_BISHOP = -3, B_ROOK = -4, B_QUEEN = -5, B_KING = -6 };
+enum Piece
+{
+	EMPTY = 0,
+	W_PAWN = 1,
+	W_KNIGHT = 2,
+	W_BISHOP = 3,
+	W_ROOK = 4,
+	W_QUEEN = 5,
+	W_KING = 6,
+	B_PAWN = -1,
+	B_KNIGHT = -2,
+	B_BISHOP = -3,
+	B_ROOK = -4,
+	B_QUEEN = -5,
+	B_KING = -6
+};
+
+enum GameStatus
+{
+	IN_PROGRESS = 0,
+	WHITE_WINS_CHECKMATE = 1,
+	BLACK_WINS_CHECKMATE = 2,
+	DRAW_STALEMATE = 3,
+	DRAW_INSUFFICIENT_MATERIAL = 4
+};
 
 // A simple structure to hold move data
-struct Move {
+struct Move
+{
 	int from_row;
 	int from_col;
 	int to_row;
