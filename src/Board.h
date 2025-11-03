@@ -49,17 +49,35 @@ struct Move
 	Move(int fr, int fc, int tr, int tc, int pp) : from_row(fr), from_col(fc), to_row(tr), to_col(tc), promotion_piece(pp) {}
 };
 
-struct GameState {
-    int board[8][8];
-    bool whiteToMove;
-    std::pair<int, int> enPassantTarget;
-    bool canWhiteKingSide;
-    bool canWhiteQueenSide;
-    bool canBlackKingSide;
-    bool canBlackQueenSide;
-    std::vector<int> whiteCaptured;
-    std::vector<int> blackCaptured;
-    };
+struct GameState
+{
+	int board[8][8];
+	bool whiteToMove;
+	std::pair<int, int> enPassantTarget;
+	bool canWhiteKingSide;
+	bool canWhiteQueenSide;
+	bool canBlackKingSide;
+	bool canBlackQueenSide;
+	std::vector<int> whiteCaptured;
+	std::vector<int> blackCaptured;
+
+	// Add a default constructor
+	GameState()
+	{
+		for (int r = 0; r < 8; ++r)
+		{
+			for (int c = 0; c < 8; ++c)
+			{
+				board[r][c] = EMPTY;
+			}
+		}
+		whiteToMove = true;
+		enPassantTarget = {-1, -1};
+		canWhiteKingSide = canWhiteQueenSide = canBlackKingSide = canBlackQueenSide = true;
+		whiteCaptured.clear();
+		blackCaptured.clear();
+	}
+};
 
 class Board
 {
