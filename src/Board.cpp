@@ -51,6 +51,10 @@ Board::Board()
 			m_board[row][col] = EMPTY;
 		}
 	}
+
+	GameState initial_state;
+	saveState(initial_state);
+	m_history.push_back(initial_state);
 }
 
 // Is it white's turn
