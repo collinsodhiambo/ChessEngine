@@ -875,15 +875,158 @@ bool Board::isKingInCheck(bool whiteKing)
 	return isSquareAttacked(king_pos.first, king_pos.second, !whiteKing);
 }
 
+std::vector<std::vector<int>> Board::getBoardState()
+{
+	// Create an 8x8 vector
+	std::vector<std::vector<int>> board_state(8, std::vector<int>(8));
 
-std::vector<std::vector<int>> Board::getBoardState() {
-    // Create an 8x8 vector
-    std::vector<std::vector<int>> board_state(8, std::vector<int>(8));
+	for (int row = 0; row < 8; ++row)
+	{
+		for (int col = 0; col < 8; ++col)
+		{
+			board_state[row][col] = m_board[row][col];
+		}
+	}
+	return board_state;
+}
 
-    for (int row = 0; row < 8; ++row) {
-        for (int col = 0; col < 8; ++col) {
-            board_state[row][col] = m_board[row][col];
+bool Board::checkInsufficientMaterial()
+{
+	// This is a helper to check for draws like K vs K, K+N vs K, etc
+	int white_knights = 0;
+	int black_knights = 0;
+	int white_bishops = 0;
+	int black_bishops = 0;
+	int other_pieces = 0; // Pawns, Rooks, Queens
+
+	for (int r = 0; r < 8; ++r)
+	{
+		for (int c = 0; c < 8; ++c)
+		{
+			int piece = m_board[r][c];
+			switch (piece)
+			{
+			case W_KNIGHT:
+				white_knights++;
+				break;
+			case B_KNIGHT:
+				black_knights++;
+				break;
+			case W_BISHOP:
+				white_bishops++;
+				break;
+			case B_BISHOP:
+				black_bishops++;
+				break;
+			case W_PAWN:
+			case B_PAWN:
+			case W_ROOK:
+			case B_ROOK:
+			case W_QUEEN:
+			case B_QUEEN:
+				other_pieces++;
+				break;
+			}
+		}
+	}
+
+	// If there are any pawns, rooks, or queens, it's not a draw
+	if (other_pieces > 0)
+	{
+		return false;
+	}
+
+	// K vs K
+	if (white_knights + white_bishops + black_knights + black_bishops == 0)
+	{
+		return true;
+	}
+
+	// K+N vs K
+	if (white_knights == 1 && (black_knights + black_bishops == 0))
+	{
+		return true;
+	}
+	if (black_knights == 1 && (white_knights + white_bishops == 0))
+	{
+		return true;
+	}
+
+	// K+B vs K
+	if (white_bishops == 1 && (black_knights + black_bishops == 0))
+	{
+		return true;
+	}
+	if (black_bishops == 1 && (white_knights + white_bishops == 0))
+	{
+		return true;
+	}
+
+	// K+B vs K+B (both bishops on same color)
+	if (white_bishops == 1 && black_bishops == 1 && white_knights == 0 && black_knights == 0)
+	{
+		// Determine the color of the bishops
+		std::pair<int, int> white_bishop_pos = {-1, -1};
+		std::pair<int, int> black_bishop_pos = {-1, -1};
+		for (int r = 0; r < 8; ++r)
+		{
+			for (int c = 0; c < 8; ++c)
+			{
+				if (m_board[r][c] == W_BISHOP)
+				{
+					white_bishop_pos = {r, c};
+				}
+				else if (m_board[r][c] == B_BISHOP)
+				{
+					black_bishop_pos = {r, c};
+				}
+			}
+		}
+		if (white_bishop_pos.first != -1 && black_bishop_pos.first != -1)
+		{
+			bool white_bishop_color = (white_bishop_pos.first + white_bishop_pos.second) % 2;
+			bool black_bishop_color = (black_bishop_pos.first + black_bishop_pos.second) % 2;
+			if (white_bishop_color == black_bishop_color)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+GameStatus Board::getGameStatus()
+{
+	// First check for insufficient material
+	if (checkInsufficientMaterial())
+	{
+		return GameStatus::DRAW_INSUFFICIENT_MATERIAL;
+	}
+
+	// Get all legal moves
+	std::vector<Move> legalMoves = getLegalMoves();
+
+	if (legalMoves.empty())
+	{
+		// No legal moves available
+		if (isKingInCheck(m_whiteToMove))
+		{
+			return m_whiteToMove ? GameStatus::BLACK_WINS_CHECKMATE : GameStatus::WHITE_WINS_CHECKMATE;
+		}
+		else
+		{
+			return GameStatus::DRAW_STALEMATE;
+		}
+	}
+	return GameStatus::IN_PROGRESS;
+}
+
+void Board::saveState(GameState& state) {
+    for (int r = 0; r < 8; ++r) {
+        for (int c = 0; c , 8; ++c) {
+            state.board[r][c] = m_board[r][c];
         }
     }
-    return board_state;
-}
+
+    state.whiteToMove = m_whiteToMove;
+    state.enPassantTarget = m_enPassantTarget
