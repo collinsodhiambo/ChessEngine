@@ -1017,12 +1017,85 @@ GameStatus Board::getGameStatus()
 	return GameStatus::IN_PROGRESS;
 }
 
-void Board::saveState(GameState& state) {
-    for (int r = 0; r < 8; ++r) {
-        for (int c = 0; c , 8; ++c) {
-            state.board[r][c] = m_board[r][c];
-        }
-    }
+void Board::saveState(GameState &state)
+{
+	for (int r = 0; r < 8; ++r)
+	{
+		for (int c = 0; c < 8; ++c)
+		{
+			state.board[r][c] = m_board[r][c];
+		}
+	}
 
-    state.whiteToMove = m_whiteToMove;
-    state.enPassantTarget = m_enPassantTarget
+	state.whiteToMove = m_whiteToMove;
+	state.enPassantTarget = m_enPassantTarget;
+	state.canWhiteKingSide = m_canWhiteKingSide;
+	state.canWhiteQueenSide = m_canWhiteQueenSide;
+	state.canBlackKingSide = m_canBlackKingSide;
+	state.canBlackQueenSide = m_canBlackQueenSide;
+	state.whiteCaptured = m_whiteCaptured;
+	state.blackCaptured = m_blackCaptured;
+}
+
+void Board::restoreState(const GameState &state)
+{
+	for (int r = 0; r < 8; ++r)
+	{
+		for (int c = 0; c < 8; ++c)
+		{
+			m_board[r][c] = state.board[r][c];
+		}
+	}
+
+	m_whiteToMove = state.whiteToMove;
+	m_enPassantTarget = state.enPassantTarget;
+	m_canWhiteKingSide = state.canWhiteKingSide;
+	m_canWhiteQueenSide = state.canWhiteQueenSide;
+	m_canBlackKingSide = state.canBlackKingSide;
+	m_canBlackQueenSide = state.canBlackQueenSide;
+	m_whiteCaptured = state.whiteCaptured;
+	m_blackCaptured = state.blackCaptured;
+}
+
+bool Board::undoMove()
+{
+	if (m_history.size() <= 1)
+	{				  // 1 because we keep the initial state
+		return false; // Nothing to undo
+	}
+
+	// Save the current state to the redo stack
+	GameState current_state;
+	saveState(current_state);
+	m_redoStack.push_back(current_state);
+
+	// Load the previous state from history
+	GameState last_state = m_history.back();
+	m_history.pop_back();
+	restoreState(last_state);
+
+	return true;
+}
+
+bool Board::redoMove()
+{
+	if (m_redoStack.empty())
+	{
+		return false; // Nothing to redo
+	}
+
+	// Save the current state back to the history
+	GameState current_state;
+	saveState(current_state);
+	m_history.push_back(current_state);
+
+	// Load the next state from the redo stack
+	GameState next_state = m_redoStack.back();
+	m_redoStack.pop_back();
+	restoreState(next_state);
+
+	return true;
+}
+
+std::vector<int> Board::getWhiteCaptured() { return m_whiteCaptured; }
+std::vector<int> Board::getBlackCaptured() { return m_blackCaptured; }
