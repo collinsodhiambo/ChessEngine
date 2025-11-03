@@ -44,84 +44,116 @@ struct Move
 	int promotion_piece;
 
 	// Constructor for Normal moves
-	Move(int fr, int fc, int tr, int tc):
-		from_row(fr), from_col(fc), to_row(tr), to_col(tc), promotion_piece(EMPTY) {}
+	Move(int fr, int fc, int tr, int tc) : from_row(fr), from_col(fc), to_row(tr), to_col(tc), promotion_piece(EMPTY) {}
 
-	Move(int fr, int fc, int tr, int tc, int pp):
-                from_row(fr), from_col(fc), to_row(tr), to_col(tc), promotion_piece(pp) {}
-
+	Move(int fr, int fc, int tr, int tc, int pp) : from_row(fr), from_col(fc), to_row(tr), to_col(tc), promotion_piece(pp) {}
 };
 
-class Board {
-	public:
-		// Constructor:
-		Board();
+struct GameState {
+    int board[8][8];
+    bool whiteToMove;
+    std::pair<int, int> enPassantTarget;
+    bool canWhiteKingSide;
+    bool canWhiteQueenSide;
+    bool canBlackKingSide;
+    bool canBlackQueenSide;
+    std::vector<int> whiteCaptured;
+    std::vector<int> blackCaptured;
+    };
 
-		// Print the board to the console
-		void print();
+class Board
+{
+public:
+	// Constructor:
+	Board();
 
-		// Function to update the board state with a move.
-		// We pass the Move object by const reference (&). This avoids making a copy
-		// and is more efficient
-		void makeMove(const Move& move);
+	// Print the board to the console
+	void print();
 
-		// A function to get all legal moves for a pawn at a specific square
-		// Will return a vector of Move objects
-		std::vector<Move> getPawnMoves(int row, int col);
+	// Function to update the board state with a move.
+	// We pass the Move object by const reference (&). This avoids making a copy
+	// and is more efficient
+	void makeMove(const Move &move);
 
-		// Knight's move generator
-		std::vector<Move> getKnightMoves(int row, int col);
+	// A function to get all legal moves for a pawn at a specific square
+	// Will return a vector of Move objects
+	std::vector<Move> getPawnMoves(int row, int col);
 
-		// Rook's move generator
-		std::vector<Move> getRookMoves(int row, int col);
+	// Knight's move generator
+	std::vector<Move> getKnightMoves(int row, int col);
 
-		// Bishop's move generator
-		std::vector<Move> getBishopMoves(int row, int col);
+	// Rook's move generator
+	std::vector<Move> getRookMoves(int row, int col);
 
-		// Queen's move generator
-		std::vector<Move> getQueenMoves(int row, int col);
+	// Bishop's move generator
+	std::vector<Move> getBishopMoves(int row, int col);
 
-		// King's move generator
-		std::vector<Move> getKingMoves(int row, int col);
+	// Queen's move generator
+	std::vector<Move> getQueenMoves(int row, int col);
 
-		// Master function to get all moves for the current player
-		std::vector<Move> getLegalMoves();
+	// King's move generator
+	std::vector<Move> getKingMoves(int row, int col);
 
-		// Checks if a square is attacked by a given side
-		bool isSquareAttacked(int row, int col, bool byWhite);
+	// Master function to get all moves for the current player
+	std::vector<Move> getLegalMoves();
 
+	// Checks if a square is attacked by a given side
+	bool isSquareAttacked(int row, int col, bool byWhite);
 
-		// Check the current king's status
-		// We pass 'true' to check the white king, 'false' for black
-		bool isKingInCheck(bool whiteKing);
+	// Check the current king's status
+	// We pass 'true' to check the white king, 'false' for black
+	bool isKingInCheck(bool whiteKing);
 
+	// A function to get the board state as a 2D vector
+	std::vector<std::vector<int>> getBoardState();
 
-        // A function to get the board state as a 2D vector
-        std::vector<std::vector<int>> getBoardState();
+	// Function to say whose turn it is
+	bool isWhiteToMove();
 
-        // Function to say whose turn it is
-        bool isWhiteToMove();
+	// Function to check game state
+	GameStatus getGameStatus();
 
-	private:
-		// Helper function to get the character for a piece
-		char getPieceChar(int piece);
+    bool undoMove();
+    bool redoMove();
 
-                // 8x8 array representing the board
-                int m_board[8][8];
+    std::vector<int> getWhiteCaptured();
+    std::vector<int> getBlackCaptured();
 
-		// A variable to track whose turn it is
-		bool m_whiteToMove;
+private:
+	// Helper function to get the character for a piece
+	char getPieceChar(int piece);
 
-		// Helper to find the specified king (specified by `bool whiteKing`)
-		std::pair<int, int> findKing(bool whiteKing);
+	// 8x8 array representing the board
+	int m_board[8][8];
 
-		// Store the (row, col) of the square that is vulerable to en passant. (-1, -) if none.
-		std::pair<int, int> m_enPassantTarget;
+	// A variable to track whose turn it is
+	bool m_whiteToMove;
 
-		// Castling rights
-		bool m_canWhiteKingSide;
-		bool m_canWhiteQueenSide;
-		bool m_canBlackKingSide;
-		bool m_canBlackQueenSide;
-	};
-#endif //BOARD_H
+	// Helper to find the specified king (specified by `bool whiteKing`)
+	std::pair<int, int> findKing(bool whiteKing);
+
+	// Store the (row, col) of the square that is vulerable to en passant. (-1, -) if none.
+	std::pair<int, int> m_enPassantTarget;
+
+	// Castling rights
+	bool m_canWhiteKingSide;
+	bool m_canWhiteQueenSide;
+	bool m_canBlackKingSide;
+	bool m_canBlackQueenSide;
+
+	// Helper for draw detection
+	bool checkInsufficientMaterial();
+
+    // Lists for captured pieces
+    std::vector<int> m_whiteCaptured;
+    std::vector<int> m_blackCaptured;
+
+    // Stacks to hold game history
+    std::vector<GameState> m_history;
+    std::vector<GameState> m_redoStack;
+
+    // Helper functions to save/load state
+    void saveState(GameState& state);
+    void restoreState(const GameState& state);
+};
+#endif // BOARD_H
