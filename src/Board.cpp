@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <utility>
+#include <algorithm>
 
 // Create the constructor for the Board
 Board::Board()
