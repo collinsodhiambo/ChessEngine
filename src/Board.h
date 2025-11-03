@@ -162,16 +162,16 @@ private:
 	// Helper for draw detection
 	bool checkInsufficientMaterial();
 
-    // Lists for captured pieces
-    std::vector<int> m_whiteCaptured;
-    std::vector<int> m_blackCaptured;
+	// Lists for captured pieces
+	std::vector<int> m_whiteCaptured;
+	std::vector<int> m_blackCaptured;
 
-    // Stacks to hold game history
-    std::vector<GameState> m_history;
-    std::vector<GameState> m_redoStack;
+	// Stacks to hold game history
+	std::vector<GameState> m_history;
+	std::vector<GameState> m_redoStack;
 
-    // Helper functions to save/load state
-    void saveState(GameState& state);
-    void restoreState(const GameState& state);
+	// Helper functions to save/load state
+	void saveState(GameState &state);
+	void restoreState(const GameState &state);
 };
 #endif // BOARD_H
