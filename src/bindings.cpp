@@ -43,5 +43,9 @@ PYBIND11_MODULE(chess, m)
 		.def("isSquareAttacked", &Board::isSquareAttacked)
 		.def("is_white_to_move", &Board::isWhiteToMove)
 		.def("get_board_state", &Board::getBoardState)
-		.def("get_game_status", &Board::getGameStatus);
+		.def("get_game_status", &Board::getGameStatus)
+		.def("undoMove", &Board::undoMove)
+		.def("redoMove", &Board::redoMove)
+		.def("getWhiteCaptured", &Board::getWhiteCaptured)
+		.def("getBlackCaptured", &Board::getBlackCaptured);
 }
