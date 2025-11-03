@@ -113,12 +113,34 @@ def draw_game_state(screen, board_state, images, images_small, selected_square,
                          pygame.Rect(col * SQUARE_SIZE, row * SQUARE_SIZE,
                                      SQUARE_SIZE, SQUARE_SIZE), 5)
 
+
     # Highlight legal moves
     for move in legal_moves_for_piece:
         row, col = move.to_row, move.to_col
-        center_x = col * SQUARE_SIZE + SQUARE_SIZE // 2
-        center_y = row * SQUARE_SIZE + SQUARE_SIZE // 2
-        pygame.draw.circle(screen, HIGHLIGHT_LEGAL_COLOR, (center_x, center_y), SQUARE_SIZE // 6)
+
+        # Check if this move is a capture
+        piece_on_target = board_state[row][col]
+        moving_piece = board_state[move.from_row][move.from_col]
+
+        # A capture is either landing on an enemy piece ...
+        is_capture = (piece_on_target != EMPTY)
+
+        # ... or is an en passant
+        is_en_passant = (abs(moving_piece) == W_PAWN and
+                        move.to_col != move.from_col and
+                        piece_on_target == EMPTY)
+
+        if is_capture or is_en_passant:
+            color = CAPTURE_HIGHLIGHT_COLOR
+            pygame.draw.rect(screen, CHECK_COLOR,
+                                     pygame.Rect(col * SQUARE_SIZE, row * SQUARE_SIZE,
+                                                 SQUARE_SIZE, SQUARE_SIZE))
+        else:
+            color = HIGHLIGHT_LEGAL_COLOR
+
+            center_x = col * SQUARE_SIZE + SQUARE_SIZE // 2
+            center_y = row * SQUARE_SIZE + SQUARE_SIZE // 2
+            pygame.draw.circle(screen, color, (center_x, center_y), SQUARE_SIZE // 6)
 
     # Draw the pieces on the board
     for row in range(8):
@@ -130,7 +152,7 @@ def draw_game_state(screen, board_state, images, images_small, selected_square,
                                                 row * SQUARE_SIZE + SQUARE_SIZE // 2))
                 screen.blit(image, rect)
 
-    # Draw the Captured Pieces Area (NEW)
+    # Draw the Captured Pieces Area
     pygame.draw.rect(screen, CAPTURE_BG_COLOR,
                      pygame.Rect(BOARD_WIDTH, 0, CAPTURE_WIDTH, SCREEN_HEIGHT))
 
