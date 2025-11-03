@@ -233,6 +233,21 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_u: # 'u' key to undo
+                    board.undoMove()
+                    selected_square = None
+                    legal_moves_for_piece = []
+                    # After undoing, game is no longer over
+                    game_over = False
+                
+                elif event.key == pygame.K_r: # 'r' key to reset
+                    board.redoMove()
+                    selected_square = None
+                    legal_moves_for_piece = []
+                    # After redoing, game is no longer over
+                    game_over = False
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
 
@@ -280,31 +295,7 @@ def main():
                                 break
 
                         if move_to_make:
-                            # Track Captures ---
-                            captured_piece = current_board_state[move_to_make.to_row][move_to_make.to_col]
-                            moving_piece = current_board_state[move_to_make.from_row][move_to_make.from_col]
-
-                            # 1. Normal Capture
-                            if captured_piece != EMPTY:
-                                if is_white_turn:
-                                    black_captured.append(captured_piece)
-                                else:
-                                    white_captured.append(captured_piece)
-
-                            # 2. En Passant Capture
-                            if (abs(moving_piece) == W_PAWN and
-                                captured_piece == EMPTY and
-                                move_to_make.from_col != move_to_make.to_col):
-                                if is_white_turn:
-                                    black_captured.append(B_PAWN)
-                                else:
-                                    white_captured.append(W_PAWN)
-
                             board.makeMove(move_to_make) # Make the move
-
-                            # Sort lists to keep them tidy
-                            white_captured.sort()
-                            black_captured.sort()
 
                         selected_square = None
                         legal_moves_for_piece = []
