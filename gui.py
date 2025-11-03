@@ -195,10 +195,6 @@ def main():
 
     board = chess.Board()
 
-    # Lists to hold captured pieces
-    white_captured = []
-    black_captured = []
-
     selected_square = None
     legal_moves_for_piece = []
 
@@ -212,6 +208,10 @@ def main():
         current_board_state = board.get_board_state()
         is_white_turn = board.is_white_to_move()
         is_in_check = board.isKingInCheck(is_white_turn)
+
+        # Get captured lists from C++
+        white_captured = board.getWhiteCaptured()
+        black_captured = board.getBlackCaptured()
 
         # Check game status
         if not game_over:
