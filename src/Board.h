@@ -131,11 +131,11 @@ public:
 	// Function to check game state
 	GameStatus getGameStatus();
 
-    bool undoMove();
-    bool redoMove();
+	bool undoMove();
+	bool redoMove();
 
-    std::vector<int> getWhiteCaptured();
-    std::vector<int> getBlackCaptured();
+	std::vector<int> getWhiteCaptured();
+	std::vector<int> getBlackCaptured();
 
 private:
 	// Helper function to get the character for a piece
