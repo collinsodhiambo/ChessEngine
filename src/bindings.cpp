@@ -47,5 +47,7 @@ PYBIND11_MODULE(chess, m)
 		.def("undoMove", &Board::undoMove)
 		.def("redoMove", &Board::redoMove)
 		.def("getWhiteCaptured", &Board::getWhiteCaptured)
-		.def("getBlackCaptured", &Board::getBlackCaptured);
+		.def("getBlackCaptured", &Board::getBlackCaptured)
+		.def("get_feature_planes", &Board::getFeaturePlanes);
+
 }
