@@ -2,7 +2,7 @@
 
 A high-performance chess engine written from scratch in C++ (17), exposed to Python using `pybind11`, and wrapped in a playable GUI built with `pygame`.
 
-![GUI Screenshot] (images/gui_screenshot.png)
+![GUI Screenshot](images/gui_screenshot.png)
 
 ## Features
 
