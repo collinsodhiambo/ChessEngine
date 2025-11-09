@@ -2,7 +2,7 @@
 
 A high-performance chess engine written from scratch in C++ (17), exposed to Python using `pybind11`, and wrapped in a playable GUI built with `pygame`.
 
-[GUI Screenshot] (images/bP.svg)
+![GUI Screenshot] (images/gui_screenshot.png)
 
 ## Features
 
@@ -55,7 +55,7 @@ This project was built on **Ubuntu 24.04** with **Python 3.10**.
 
 You must have the C++ build tools and the Python 3.10 development headers.
 
-````bash
+```bash
 sudo apt update
 sudo apt install build-essential python3.10-dev
 
