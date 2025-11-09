@@ -1099,3 +1099,54 @@ bool Board::redoMove()
 
 std::vector<int> Board::getWhiteCaptured() { return m_whiteCaptured; }
 std::vector<int> Board::getBlackCaptured() { return m_blackCaptured; }
+
+std::vector<std::vector<std::vector<int>>> Board::getFeaturePlanes() {
+	// Initialize our 18x8x8 tensor, with all values set to 0
+	std::vector<std::vector<std::vector<int>>> planes(18, std::vector<std::vector<int>>(8, std::vector<int>(8, 0)));
+
+	// Planes 0-11: Piece Positions
+	for (int r = 0; r < 8; ++r) {
+		for (int c = 0; c < 8; ++c) {
+			int piece = m_board[r][c];
+			int plane_idx = -1;
+
+			switch (piece) {
+				case W_PAWN:   plane_idx = 0; break;
+				case W_KNIGHT: plane_idx = 1; break;
+                case W_BISHOP: plane_idx = 2; break;
+                case W_ROOK:   plane_idx = 3; break;
+                case W_QUEEN:  plane_idx = 4; break;
+                case W_KING:   plane_idx = 5; break;
+                case B_PAWN:   plane_idx = 6; break;
+                case B_KNIGHT: plane_idx = 7; break;
+                case B_BISHOP: plane_idx = 8; break;
+                case B_ROOK:   plane_idx = 9; break;
+                case B_QUEEN:  plane_idx = 10; break;
+                case B_KING:   plane_idx = 11; break;
+
+				}
+
+			if (plane_idx != -1) {
+				planes[plane_idx][r][c] = 1;
+			}
+		}
+	}
+
+	// Planes 12 - 15: Castling Rights
+	if (m_canWhiteKingSide) std::fill(planes[12].begin(), planes[12].end(), std::vector<int>(8, 1));
+	if (m_canWhiteQueenSide) std::fill(planes[13].begin(), planes[13].end(), std::vector<int>(8, 1));
+	if (m_canBlackKingSide) std::fill(planes[14].begin(), planes[14].end(), std::vector<int>(8, 1));
+	if (m_canBlackQueenSide) std::fill(planes[15].begin(), planes[15].end(), std::vector<int>(8, 1));
+
+	// Plane 16: En passant target (single capture)
+	if (m_enPassantTarget.first != -1) {
+		planes[16][m_enPassantTarget.first][m_enPassantTarget.second] = 1;
+	}
+
+	// Plane 17: Player's Turn (full plane). Zeros for Black
+	if (m_whiteToMove) {
+		std::fill(planes[17].begin(), planes[17].end(), std::vector<int>(8, 1));
+	}
+
+	return planes;
+}
