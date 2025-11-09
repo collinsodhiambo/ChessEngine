@@ -137,6 +137,9 @@ public:
 	std::vector<int> getWhiteCaptured();
 	std::vector<int> getBlackCaptured();
 
+    // Return the board state as feature planes for RL
+    std::vector<std::vector<std::vector<int>>> getFeaturePlanes();
+
 private:
 	// Helper function to get the character for a piece
 	char getPieceChar(int piece);
